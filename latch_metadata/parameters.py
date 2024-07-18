@@ -27,6 +27,19 @@ class STAR_options(Enum):
     gene_vel = "Gene Velocyto"
 
 
+class Chemistry(Enum):
+    _10xv1 = "10XV1"
+    _10xv2 = "10XV2"
+    _10xv3 = "10XV3"
+    auto = "auto"
+
+
+class kb_workflow(Enum):
+    std = "standard"
+    nac = "nac"
+    lamanno = "lamanno"
+
+
 generated_parameters = {
     "input": NextflowParameter(
         type=LatchFile,
@@ -71,7 +84,7 @@ generated_parameters = {
         description="Name of the tool to use for scRNA (pseudo-) alignment.",
     ),
     "protocol": NextflowParameter(
-        type=str,
+        type=Chemistry,
         section_title=None,
         display_name="Chemistry",
         description="The protocol that was used to generate the single cell data, e.g. 10x Genomics v2 Chemistry.\n\n Can be 'auto' (cellranger only), '10XV1', '10XV2', '10XV3', or any other protocol string that will get directly passed the respective aligner.",
@@ -203,8 +216,8 @@ generated_parameters = {
         description="Specify a path to the intron transcripts-to-capture.",
     ),
     "kb_workflow": NextflowParameter(
-        type=typing.Optional[str],
-        default="standard",
+        type=typing.Optional[kb_workflow],
+        default=kb_workflow.std,
         section_title=None,
         display_name="kb_workflow",
         description="Type of workflow. Use `nac` for an index type that can quantify nascent and mature RNA. Use `lamanno` for RNA velocity based on La Manno et al. 2018 logic. (default: standard)",

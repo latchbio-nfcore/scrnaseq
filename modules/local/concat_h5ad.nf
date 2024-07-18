@@ -1,5 +1,5 @@
 process CONCAT_H5AD {
-    label 'process_medium'
+    label 'process_high_memory'
 
     conda "conda-forge::scanpy conda-forge::python-igraph conda-forge::leidenalg"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?

@@ -45,6 +45,23 @@ def initialize() -> str:
     return resp.json()["name"]
 
 
+class Chemistry(Enum):
+    _10xv1 = '10XV1'
+    _10xv2 = '10XV2'
+    _10xv3 = '10XV3'
+    auto = 'auto'
+
+
+
+
+class kb_workflow(Enum):
+    std = 'standard'
+    nac = 'nac'
+    lamanno = 'lamanno'
+
+
+
+
 class Aligner(Enum):
     star = 'star'
     alevin = 'alevin'
@@ -67,7 +84,7 @@ class STAR_options(Enum):
 
 
 @nextflow_runtime_task(cpu=8, memory=8, storage_gib=500)
-def nextflow_runtime(pvc_name: str, input: LatchFile, outdir: typing_extensions.Annotated[LatchDir, FlyteAnnotation({'output': True})], email: typing.Optional[str], multiqc_title: typing.Optional[str], barcode_whitelist: typing.Optional[LatchFile], protocol: str, skip_multiqc: typing.Optional[bool], skip_fastqc: typing.Optional[bool], skip_emptydrops: typing.Optional[bool], genome: typing.Optional[str], fasta: typing.Optional[LatchFile], transcript_fasta: typing.Optional[LatchFile], gtf: typing.Optional[LatchFile], salmon_index: typing.Optional[LatchFile], txp2gene: typing.Optional[LatchFile], star_index: typing.Optional[LatchFile], star_ignore_sjdbgtf: typing.Optional[str], seq_center: typing.Optional[str], kallisto_index: typing.Optional[LatchFile], kb_t1c: typing.Optional[LatchFile], kb_t2c: typing.Optional[LatchFile], kb_filter: typing.Optional[bool], cellranger_index: typing.Optional[LatchFile], motifs: typing.Optional[str], cellrangerarc_config: typing.Optional[str], cellrangerarc_reference: typing.Optional[str], universc_index: typing.Optional[LatchFile], multiqc_methods_description: typing.Optional[str], aligner: Aligner, save_reference: typing.Optional[bool], simpleaf_rlen: typing.Optional[int], star_feature: typing.Optional[STAR_options], kb_workflow: typing.Optional[str]) -> None:
+def nextflow_runtime(pvc_name: str, input: LatchFile, outdir: typing_extensions.Annotated[LatchDir, FlyteAnnotation({'output': True})], email: typing.Optional[str], multiqc_title: typing.Optional[str], barcode_whitelist: typing.Optional[LatchFile], protocol: Chemistry, skip_multiqc: typing.Optional[bool], skip_fastqc: typing.Optional[bool], skip_emptydrops: typing.Optional[bool], genome: typing.Optional[str], fasta: typing.Optional[LatchFile], transcript_fasta: typing.Optional[LatchFile], gtf: typing.Optional[LatchFile], salmon_index: typing.Optional[LatchFile], txp2gene: typing.Optional[LatchFile], star_index: typing.Optional[LatchFile], star_ignore_sjdbgtf: typing.Optional[str], seq_center: typing.Optional[str], kallisto_index: typing.Optional[LatchFile], kb_t1c: typing.Optional[LatchFile], kb_t2c: typing.Optional[LatchFile], kb_filter: typing.Optional[bool], cellranger_index: typing.Optional[LatchFile], motifs: typing.Optional[str], cellrangerarc_config: typing.Optional[str], cellrangerarc_reference: typing.Optional[str], universc_index: typing.Optional[LatchFile], multiqc_methods_description: typing.Optional[str], aligner: Aligner, save_reference: typing.Optional[bool], simpleaf_rlen: typing.Optional[int], star_feature: typing.Optional[STAR_options], kb_workflow: typing.Optional[kb_workflow]) -> None:
     try:
         shared_dir = Path("/nf-workdir")
 
@@ -173,7 +190,7 @@ def nextflow_runtime(pvc_name: str, input: LatchFile, outdir: typing_extensions.
 
 
 @workflow(metadata._nextflow_metadata)
-def nf_nf_core_scrnaseq(input: LatchFile, outdir: typing_extensions.Annotated[LatchDir, FlyteAnnotation({'output': True})], email: typing.Optional[str], multiqc_title: typing.Optional[str], barcode_whitelist: typing.Optional[LatchFile], protocol: str, skip_multiqc: typing.Optional[bool], skip_fastqc: typing.Optional[bool], skip_emptydrops: typing.Optional[bool], genome: typing.Optional[str], fasta: typing.Optional[LatchFile], transcript_fasta: typing.Optional[LatchFile], gtf: typing.Optional[LatchFile], salmon_index: typing.Optional[LatchFile], txp2gene: typing.Optional[LatchFile], star_index: typing.Optional[LatchFile], star_ignore_sjdbgtf: typing.Optional[str], seq_center: typing.Optional[str], kallisto_index: typing.Optional[LatchFile], kb_t1c: typing.Optional[LatchFile], kb_t2c: typing.Optional[LatchFile], kb_filter: typing.Optional[bool], cellranger_index: typing.Optional[LatchFile], motifs: typing.Optional[str], cellrangerarc_config: typing.Optional[str], cellrangerarc_reference: typing.Optional[str], universc_index: typing.Optional[LatchFile], multiqc_methods_description: typing.Optional[str], aligner: Aligner = Aligner.alevin, save_reference: typing.Optional[bool] = True, simpleaf_rlen: typing.Optional[int] = 91, star_feature: typing.Optional[STAR_options] = STAR_options.gene, kb_workflow: typing.Optional[str] = 'standard') -> None:
+def nf_nf_core_scrnaseq(input: LatchFile, outdir: typing_extensions.Annotated[LatchDir, FlyteAnnotation({'output': True})], email: typing.Optional[str], multiqc_title: typing.Optional[str], barcode_whitelist: typing.Optional[LatchFile], protocol: Chemistry, skip_multiqc: typing.Optional[bool], skip_fastqc: typing.Optional[bool], skip_emptydrops: typing.Optional[bool], genome: typing.Optional[str], fasta: typing.Optional[LatchFile], transcript_fasta: typing.Optional[LatchFile], gtf: typing.Optional[LatchFile], salmon_index: typing.Optional[LatchFile], txp2gene: typing.Optional[LatchFile], star_index: typing.Optional[LatchFile], star_ignore_sjdbgtf: typing.Optional[str], seq_center: typing.Optional[str], kallisto_index: typing.Optional[LatchFile], kb_t1c: typing.Optional[LatchFile], kb_t2c: typing.Optional[LatchFile], kb_filter: typing.Optional[bool], cellranger_index: typing.Optional[LatchFile], motifs: typing.Optional[str], cellrangerarc_config: typing.Optional[str], cellrangerarc_reference: typing.Optional[str], universc_index: typing.Optional[LatchFile], multiqc_methods_description: typing.Optional[str], aligner: Aligner = Aligner.alevin, save_reference: typing.Optional[bool] = True, simpleaf_rlen: typing.Optional[int] = 91, star_feature: typing.Optional[STAR_options] = STAR_options.gene, kb_workflow: typing.Optional[kb_workflow] = kb_workflow.std) -> None:
     """
     nf-core/scrnaseq
 
