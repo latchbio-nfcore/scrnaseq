@@ -162,7 +162,7 @@
                     "type": "string",
                     "description": "This can be used to specify a precomputed Salmon index in the pipeline, in order to skip the generation of required indices by Salmon itself.",
                     "fa_icon": "fas fa-fish",
-                    "format": "file-path",
+                    "format": "directory-path",
                     "exists": true
                 },
                 "txp2gene": {

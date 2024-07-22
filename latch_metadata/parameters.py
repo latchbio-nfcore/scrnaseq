@@ -1,6 +1,8 @@
+import csv
 import typing
 from dataclasses import dataclass
 from enum import Enum
+from pathlib import Path
 
 import typing_extensions
 from flytekit.core.annotation import FlyteAnnotation
@@ -40,13 +42,51 @@ class kb_workflow(Enum):
     lamanno = "lamanno"
 
 
+class Reference_Type(Enum):
+    hg19 = "Homo sapiens (RefSeq GRCh37)"
+    mm10 = "Mus musculus (RefSeq GRCm38)"
+
+
+@dataclass
+class SampleSheet:
+    sample: str
+    fastq_1: LatchFile
+    fastq_2: LatchFile
+    expected_cells: int
+
+
+# def custom_samplesheet_constructor(samples: typing.List[SampleSheet]) -> Path:
+#     samplesheet = Path("/root/samplesheet.csv")
+
+#     columns = ["sample", "fastq_1", "fastq_2", "expected_cells"]
+
+#     with open(samplesheet, "w") as f:
+#         writer = csv.DictWriter(f, columns, delimiter=",")
+#         writer.writeheader()
+
+#         for sample in samples:
+#             row_data = {
+#                 "sample": sample.sample,
+#                 "fastq_1": sample.fastq_1.remote_path,
+#                 "fastq_2": sample.fastq_2.remote_path,
+#                 "expected_cells": 10000 if sample.expected_cells is None else sample.expected_cells,
+#             }
+#             print(row_data)
+#             writer.writerow(row_data)
+
+#     return samplesheet
+
+
 generated_parameters = {
     "input": NextflowParameter(
-        type=LatchFile,
-        default=None,
+        type=typing.List[SampleSheet],
+        display_name="Samplesheet",
+        description="Information about the samples in the experiment",
+        # batch_table_column=True,
+        # default=None,
         section_title=None,
-        display_name="Sample Sheet",
-        description="Path to comma-separated file containing information about the samples in the experiment.",
+        samplesheet_type="csv",
+        samplesheet=True,
     ),
     "outdir": NextflowParameter(
         type=typing_extensions.Annotated[LatchDir, FlyteAnnotation({"output": True})],
@@ -54,6 +94,13 @@ generated_parameters = {
         section_title=None,
         display_name="Output Directory",
         description="The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
+    ),
+    "runname": NextflowParameter(
+        type=str,
+        default=None,
+        section_title=None,
+        display_name="Run Name",
+        description="Run name",
     ),
     "email": NextflowParameter(
         type=typing.Optional[str],
@@ -110,12 +157,16 @@ generated_parameters = {
         section_title=None,
         description="Skip custom empty drops filter module",
     ),
-    "genome": NextflowParameter(
-        type=typing.Optional[str],
-        default=None,
-        section_title="Reference genome options",
-        display_name="iGenome",
-        description="Name of iGenomes reference.",
+    "genome_source": NextflowParameter(
+        type=str,
+        display_name="Reference Genome",
+        description="Choose Reference Genome",
+    ),
+    "latch_genome": NextflowParameter(
+        type=Reference_Type,
+        display_name="Latch Verfied Reference Genome",
+        description="Name of Latch Verfied Reference Genome.",
+        default=Reference_Type.mm10,
     ),
     "fasta": NextflowParameter(
         type=typing.Optional[LatchFile],
@@ -146,7 +197,7 @@ generated_parameters = {
         description="Specify this parameter to save the indices created (STAR, Kallisto, Salmon) to the results.",
     ),
     "salmon_index": NextflowParameter(
-        type=typing.Optional[LatchFile],
+        type=typing.Optional[LatchDir],
         default=None,
         section_title="Alevin Options",
         display_name="Precomputed salmon index",
