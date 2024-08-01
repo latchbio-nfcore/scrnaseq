@@ -32,7 +32,9 @@ flow = [
             "",
             latch_genome_source=ForkBranch("Latch Certified Reference Genome", Params("latch_genome")),
             input_ref=ForkBranch(
-                "Custom Reference Genome", Params("fasta", "gtf", "transcript_fasta", "save_reference")
+                # "Custom Reference Genome", Params("fasta", "gtf", "transcript_fasta", "save_reference")
+                "Custom Reference Genome",
+                Params("fasta", "gtf"),
             ),
         ),
     ),
@@ -59,8 +61,18 @@ flow = [
             ),
         ),
     ),
-    Spoiler("Multi QC", Params("multiqc_title", "multiqc_methods_description")),
-    Spoiler("Skip Tools", Params("skip_multiqc", "skip_fastqc", "skip_emptydrops")),
+    Spoiler(
+        "Optional Arguments",
+        Text("Additional optional Arguments"),
+        Section(
+            "Multi QC",
+            Params("multiqc_title", "multiqc_methods_description"),
+        ),
+        Section(
+            "Skip Tools",
+            Params("skip_multiqc", "skip_fastqc", "skip_emptydrops"),
+        ),
+    ),
 ]
 
 NextflowMetadata(

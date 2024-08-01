@@ -18,8 +18,8 @@ class Aligner(Enum):
     star = "star"
     alevin = "alevin"
     kallisto = "kallisto"
-    cellranger = "cellranger"
-    cellranger_arc = "cellrangerarc"
+    # cellranger = "cellranger"
+    # cellranger_arc = "cellrangerarc"
     UniverSC = "universc"
 
 
@@ -166,7 +166,7 @@ generated_parameters = {
         type=Reference_Type,
         display_name="Latch Verfied Reference Genome",
         description="Name of Latch Verfied Reference Genome.",
-        default=Reference_Type.mm10,
+        default=Reference_Type.hg19,
     ),
     "fasta": NextflowParameter(
         type=typing.Optional[LatchFile],
@@ -190,8 +190,8 @@ generated_parameters = {
         description="Reference GTF annotation file",
     ),
     "save_reference": NextflowParameter(
-        type=typing.Optional[bool],
-        default=True,
+        type=bool,
+        default=False,
         section_title=None,
         display_name="save reference index?",
         description="Specify this parameter to save the indices created (STAR, Kallisto, Salmon) to the results.",

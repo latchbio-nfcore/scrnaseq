@@ -72,7 +72,7 @@ class SampleSheet:
     sample: str
     fastq_1: LatchFile
     fastq_2: LatchFile
-    expected_cells: typing.Optional[str]
+    expected_cells: int
 
 
 class Aligner(Enum):
@@ -145,10 +145,10 @@ def nextflow_runtime(
     multiqc_methods_description: typing.Optional[str],
     aligner: Aligner,
     latch_genome: Reference_Type,
-    save_reference: typing.Optional[bool],
     simpleaf_rlen: typing.Optional[int],
     star_feature: typing.Optional[STAR_options],
     kb_workflow: typing.Optional[kb_workflow],
+    save_reference: bool = False,
 ) -> str:
     try:
         shared_dir = Path("/nf-workdir")
@@ -198,19 +198,21 @@ def nextflow_runtime(
             *get_flag_defaults("skip_emptydrops", skip_emptydrops, None),
         ]
 
-        if genome_source == "latch_Genome_source":
+        if genome_source == "latch_genome_source":
+            print("##########Latch Genome Name##########")
+            print(latch_genome.name)
             cmd += [
                 "--fasta ",
-                "s3://latch-public/test-data/35597/" + latch_genome.name + "/" + latch_genome.name + ".fna",
+                f"s3://latch-public/test-data/35597/{latch_genome.name}/{latch_genome.name}.fna",
                 "--gtf ",
-                "s3://latch-public/test-data/35597/" + latch_genome.name + "/" + latch_genome.name + ".gtf",
+                f"s3://latch-public/test-data/35597/{latch_genome.name}/{latch_genome.name}.gtf",
             ]
 
         cmd += [
             *get_flag_defaults("fasta", fasta, None),
             *get_flag_defaults("transcript_fasta", transcript_fasta, None),
             *get_flag_defaults("gtf", gtf, None),
-            *get_flag_defaults("save_reference", save_reference, None),
+            *get_flag_defaults("save_reference", save_reference, False),
             *get_flag_defaults("salmon_index", salmon_index, None),
             *get_flag_defaults("txp2gene", txp2gene, None),
             *get_flag_defaults("simpleaf_rlen", simpleaf_rlen, "91"),
@@ -297,11 +299,11 @@ def nf_nf_core_scrnaseq(
     universc_index: typing.Optional[LatchFile],
     multiqc_methods_description: typing.Optional[str],
     aligner: Aligner = Aligner.alevin,
-    latch_genome: Reference_Type = Reference_Type.mm10,
-    save_reference: typing.Optional[bool] = True,
+    latch_genome: Reference_Type = Reference_Type.hg19,
     simpleaf_rlen: typing.Optional[int] = 91,
     star_feature: typing.Optional[STAR_options] = STAR_options.gene,
     kb_workflow: typing.Optional[kb_workflow] = kb_workflow.std,
+    save_reference: bool = False,
 ) -> LatchOutputDir:
     """
     nf-core/scrnaseq
