@@ -19,6 +19,22 @@ env LANG='en_US.UTF-8'
 
 arg DEBIAN_FRONTEND=noninteractive
 
+# Install system dependencies
+RUN apt-get update && apt-get install -y wget build-essential python-dev-is-python3
+
+# Install Mambaforge
+RUN wget https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh && \
+    bash Mambaforge-Linux-x86_64.sh -b -p /mambaforge && \
+    rm Mambaforge-Linux-x86_64.sh
+
+ENV PATH="/mambaforge/bin:$PATH"
+
+# Create cellxgene environment and install dependencies
+RUN mamba create -n cellxgene --yes python=3.7 && \
+    mamba install -n cellxgene -c conda-forge --yes pip numba==0.52.0 && \
+    mamba run -n cellxgene pip install cellxgene[prepare] && \
+    mamba run -n cellxgene pip install numpy==1.21.6
+
 # Latch SDK
 # DO NOT REMOVE
 run pip install latch==2.48.3

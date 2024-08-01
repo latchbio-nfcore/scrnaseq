@@ -20,6 +20,8 @@ from latch_cli.nextflow.workflow import get_flag
 from latch_cli.services.register.utils import import_module_by_path
 from latch_cli.utils import urljoins
 
+from wf.cellxgene import cellxgene_prep
+
 
 def get_flag_defaults(name: str, val: typing.Any, default_val: typing.Optional[typing.Any]):
     if val == default_val or val is None:
@@ -45,10 +47,22 @@ def initialize() -> str:
     resp = requests.post(
         "http://nf-dispatcher-service.flyte.svc.cluster.local/provision-storage",
         headers=headers,
-        json={},
+        json={
+            "storage_expiration_hours": 1,
+            "storage_gib": 100,
+        },
     )
     resp.raise_for_status()
     print("Done.")
+
+    pip_list_cmd = ["/bin/bash", "-c", "source /mambaforge/bin/activate cellxgene && pip list"]
+    print("Listing installed packages in cellxgene environment:")
+    subprocess.run(pip_list_cmd, check=True)
+
+    cmd = ["/bin/bash", "-c", "source /mambaforge/bin/activate cellxgene && cellxgene prepare --help"]
+    print(" ".join(cmd))
+
+    subprocess.run(cmd, check=True)
 
     return resp.json()["name"]
 
@@ -135,7 +149,7 @@ def nextflow_runtime(
     simpleaf_rlen: typing.Optional[int],
     star_feature: typing.Optional[STAR_options],
     kb_workflow: typing.Optional[kb_workflow],
-) -> None:
+) -> str:
     try:
         shared_dir = Path("/nf-workdir")
 
@@ -234,6 +248,9 @@ def nextflow_runtime(
             check=True,
             cwd=str(shared_dir),
         )
+
+        return str(runname)
+
     finally:
         print()
 
@@ -285,7 +302,7 @@ def nf_nf_core_scrnaseq(
     simpleaf_rlen: typing.Optional[int] = 91,
     star_feature: typing.Optional[STAR_options] = STAR_options.gene,
     kb_workflow: typing.Optional[kb_workflow] = kb_workflow.std,
-) -> None:
+) -> LatchOutputDir:
     """
     nf-core/scrnaseq
 
@@ -293,7 +310,7 @@ def nf_nf_core_scrnaseq(
     """
 
     pvc_name: str = initialize()
-    nextflow_runtime(
+    run_name = nextflow_runtime(
         pvc_name=pvc_name,
         input=input,
         outdir=outdir,
@@ -330,4 +347,11 @@ def nf_nf_core_scrnaseq(
         cellrangerarc_reference=cellrangerarc_reference,
         universc_index=universc_index,
         multiqc_methods_description=multiqc_methods_description,
+    )
+
+    return cellxgene_prep(
+        run_name=run_name,
+        aligner=aligner,
+        skip_emptydrops=skip_emptydrops,
+        outdir=outdir,
     )

@@ -66,7 +66,7 @@ flow = [
 NextflowMetadata(
     display_name="nf-core/scrnaseq",
     author=LatchAuthor(
-        name="Harihara",
+        name="nf-core",
     ),
     parameters=generated_parameters,
     runtime_resources=NextflowRuntimeResources(

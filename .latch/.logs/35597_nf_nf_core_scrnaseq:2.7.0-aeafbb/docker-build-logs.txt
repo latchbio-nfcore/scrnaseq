@@ -1,0 +1,1363 @@
+Step 1/15 : from 812206152185.dkr.ecr.us-west-2.amazonaws.com/latch-base-nextflow:v1.1.3
+
+
+ ---> a85a6b9d30d6
+
+Step 2/15 : workdir /tmp/docker-build/work/
+
+
+ ---> Using cache
+
+ ---> 37f23c642035
+
+Step 3/15 : shell [     "/usr/bin/env", "bash",     "-o", "errexit",     "-o", "pipefail",     "-o", "nounset",     "-o", "verbose",     "-o", "errtrace",     "-O", "inherit_errexit",     "-O", "shift_verbose",     "-c" ]
+
+
+ ---> Using cache
+
+ ---> eb71b293e6b5
+
+Step 4/15 : env TZ='Etc/UTC'
+
+
+ ---> Using cache
+
+ ---> ccc4e3d05b3f
+
+Step 5/15 : env LANG='en_US.UTF-8'
+
+
+ ---> Using cache
+
+ ---> b0a055c60cb6
+
+Step 6/15 : arg DEBIAN_FRONTEND=noninteractive
+
+
+ ---> Using cache
+
+ ---> 2f179af26440
+
+Step 7/15 : RUN apt-get install wget &&     wget https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh &&     bash Mambaforge-Linux-x86_64.sh -b -p /mambaforge &&     rm Mambaforge-Linux-x86_64.sh
+
+
+ ---> Using cache
+
+ ---> 8af28c89b059
+
+Step 8/15 : ENV PATH="/mambaforge/bin:$PATH"
+
+
+ ---> Using cache
+
+ ---> f5fb54717e6c
+
+Step 9/15 : RUN mamba create -n cellxgene --yes python=3.7 &&     mamba install -n cellxgene -c conda-forge --yes pip &&     mamba run -n cellxgene pip install cellxgene[prepare]
+
+
+ ---> Running in 3c68cbbaa6df
+
+[91mmamba create -n cellxgene --yes python=3.7 &&     mamba install -n cellxgene -c conda-forge --yes pip &&     mamba run -n cellxgene pip install cellxgene[prepare]
+[0m
+Transaction
+
+  Prefix: /mambaforge/envs/cellxgene
+
+  Updating specs:
+
+   - python=3.7
+
+
+
+  Package              Version  Build                 Channel           Size
+──────────────────────────────────────────────────────────────────────────────
+  Install:
+──────────────────────────────────────────────────────────────────────────────
+
+  + ld_impl_linux-64      2.40  hf3520f5_7            conda-forge      708kB
+  + _libgcc_mutex          0.1  conda_forge           conda-forge     Cached
+  + ca-certificates   2024.7.4  hbcca054_0            conda-forge      155kB
+  + libgomp             14.1.0  h77fa898_0            conda-forge      457kB
+  + _openmp_mutex          4.5  2_gnu                 conda-forge     Cached
+  + libgcc-ng           14.1.0  h77fa898_0            conda-forge      842kB
+  + xz                   5.2.6  h166bdaf_0            conda-forge     Cached
+  + openssl              3.3.1  h4bc722e_2            conda-forge        3MB
+  + ncurses                6.5  h59595ed_0            conda-forge      887kB
+  + libzlib              1.3.1  h4ab18f5_1            conda-forge       62kB
+  + libstdcxx-ng        14.1.0  hc0a3c3a_0            conda-forge        4MB
+  + libnsl               2.0.1  hd590300_0            conda-forge     Cached
+  + libffi               3.4.2  h7f98852_5            conda-forge     Cached
+  + readline               8.2  h8228510_1            conda-forge     Cached
+  + tk                  8.6.13  noxft_h4845f30_101    conda-forge     Cached
+  + libsqlite           3.46.0  hde9e2c9_0            conda-forge      865kB
+  + sqlite              3.46.0  h6d4b2fc_0            conda-forge      860kB
+  + python              3.7.12  hf930737_100_cpython  conda-forge       60MB
+  + wheel               0.42.0  pyhd8ed1ab_0          conda-forge       58kB
+  + setuptools          69.0.3  pyhd8ed1ab_0          conda-forge      471kB
+  + pip                   24.0  pyhd8ed1ab_0          conda-forge     Cached
+
+  Summary:
+
+  Install: 21 packages
+
+  Total download: 72MB
+
+──────────────────────────────────────────────────────────────────────────────
+
+
+
+
+Looking for: ['python=3.7']
+
+
+Downloading and Extracting Packages: ...working... done
+Preparing transaction: ...working... 
+done
+Verifying transaction: ...working... 
+done
+
+Executing transaction: ...working... 
+done
+
+
+To activate this environment, use
+
+     $ mamba activate cellxgene
+
+To deactivate an active environment, use
+
+     $ mamba deactivate
+
+
+conda-forge/linux-64                                        Using cache
+
+conda-forge/noarch                                          Using cache
+
+Transaction
+
+
+  Prefix: /mambaforge/envs/cellxgene
+
+  All requested packages already installed
+
+
+
+Looking for: ['pip']
+
+
+Pinned packages:
+  - python 3.7.*
+
+
+
+[91mWARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+
+[0m
+Collecting cellxgene[prepare]
+  Downloading cellxgene-1.2.0.tar.gz (2.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.9/2.9 MB 27.7 MB/s eta 0:00:00
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): finished with status 'done'
+Collecting anndata>=0.8.0 (from cellxgene[prepare])
+  Downloading anndata-0.8.0-py3-none-any.whl.metadata (4.6 kB)
+Collecting boto3>=1.12.18 (from cellxgene[prepare])
+  Downloading boto3-1.33.13-py3-none-any.whl.metadata (6.7 kB)
+Collecting click>=7.1.2 (from cellxgene[prepare])
+  Downloading click-8.1.7-py3-none-any.whl.metadata (3.0 kB)
+INFO: pip is looking at multiple versions of cellxgene[prepare] to determine which version is compatible with other requirements. This could take a while.
+Collecting cellxgene[prepare]
+  Downloading cellxgene-1.1.2.tar.gz (2.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.9/2.9 MB 49.4 MB/s eta 0:00:00
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): finished with status 'done'
+Collecting Flask<2.3.0,>=1.0.2 (from cellxgene[prepare])
+  Downloading Flask-2.2.5-py3-none-any.whl.metadata (3.9 kB)
+Collecting Flask-Compress>=1.4.0 (from cellxgene[prepare])
+  Downloading Flask_Compress-1.15-py3-none-any.whl.metadata (8.4 kB)
+Collecting Flask-Cors>=3.0.9 (from cellxgene[prepare])
+  Downloading Flask_Cors-4.0.1-py2.py3-none-any.whl.metadata (5.5 kB)
+Collecting Flask-RESTful>=0.3.6 (from cellxgene[prepare])
+  Downloading Flask_RESTful-0.3.10-py2.py3-none-any.whl.metadata (1.0 kB)
+Collecting flask-server-timing>=0.1.2 (from cellxgene[prepare])
+  Downloading flask-server-timing-0.1.2.tar.gz (3.3 kB)
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): finished with status 'done'
+Collecting flask-talisman>=0.7.0 (from cellxgene[prepare])
+  Downloading flask_talisman-1.1.0-py2.py3-none-any.whl.metadata (18 kB)
+Collecting flatbuffers<2.0.0,>=1.11.0 (from cellxgene[prepare])
+  Downloading flatbuffers-1.12-py2.py3-none-any.whl.metadata (872 bytes)
+Collecting flatten-dict>=0.2.0 (from cellxgene[prepare])
+  Downloading flatten_dict-0.4.2-py2.py3-none-any.whl.metadata (9.2 kB)
+Collecting fsspec<0.8.0,>=0.4.4 (from cellxgene[prepare])
+  Downloading fsspec-0.7.4-py3-none-any.whl.metadata (3.8 kB)
+Collecting gunicorn>=20.0.4 (from cellxgene[prepare])
+  Downloading gunicorn-22.0.0-py3-none-any.whl.metadata (4.4 kB)
+Collecting h5py>=3.0.0 (from cellxgene[prepare])
+  Downloading h5py-3.8.0-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (2.5 kB)
+Collecting numba>=0.51.2 (from cellxgene[prepare])
+  Downloading numba-0.56.4-cp37-cp37m-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.8 kB)
+Collecting numpy<=1.22,>=1.17.5 (from cellxgene[prepare])
+  Downloading numpy-1.21.6-cp37-cp37m-manylinux_2_12_x86_64.manylinux2010_x86_64.whl.metadata (2.1 kB)
+Collecting packaging>=20.0 (from cellxgene[prepare])
+  Downloading packaging-24.0-py3-none-any.whl.metadata (3.2 kB)
+Collecting pandas!=1.1,>=1.0 (from cellxgene[prepare])
+  Downloading pandas-1.3.5-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (12 kB)
+Collecting PyYAML>=5.4 (from cellxgene[prepare])
+  Downloading PyYAML-6.0.1-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (2.1 kB)
+Collecting scipy>=1.4 (from cellxgene[prepare])
+  Downloading scipy-1.7.3-cp37-cp37m-manylinux_2_12_x86_64.manylinux2010_x86_64.whl.metadata (2.2 kB)
+Collecting requests>=2.22.0 (from cellxgene[prepare])
+  Downloading requests-2.31.0-py3-none-any.whl.metadata (4.6 kB)
+Collecting s3fs==0.4.2 (from cellxgene[prepare])
+  Downloading s3fs-0.4.2-py3-none-any.whl.metadata (1.3 kB)
+Collecting python-igraph>=0.8 (from cellxgene[prepare])
+  Downloading python_igraph-0.11.6-py3-none-any.whl.metadata (2.8 kB)
+Collecting louvain>=0.6 (from cellxgene[prepare])
+  Downloading louvain-0.8.2-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (1.5 kB)
+Collecting scanpy (from cellxgene[prepare])
+  Downloading scanpy-1.9.3-py3-none-any.whl.metadata (6.1 kB)
+Collecting umap-learn<0.5.0 (from cellxgene[prepare])
+  Downloading umap-learn-0.4.6.tar.gz (69 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 69.9/69.9 kB 3.2 MB/s eta 0:00:00
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): finished with status 'done'
+Collecting botocore>=1.12.91 (from s3fs==0.4.2->cellxgene[prepare])
+  Downloading botocore-1.33.13-py3-none-any.whl.metadata (6.1 kB)
+Collecting natsort (from anndata>=0.8.0->cellxgene[prepare])
+  Downloading natsort-8.4.0-py3-none-any.whl.metadata (21 kB)
+Collecting importlib_metadata>=0.7 (from anndata>=0.8.0->cellxgene[prepare])
+  Downloading importlib_metadata-6.7.0-py3-none-any.whl.metadata (4.9 kB)
+Collecting typing_extensions (from anndata>=0.8.0->cellxgene[prepare])
+  Downloading typing_extensions-4.7.1-py3-none-any.whl.metadata (3.1 kB)
+Collecting jmespath<2.0.0,>=0.7.1 (from boto3>=1.12.18->cellxgene[prepare])
+  Using cached jmespath-1.0.1-py3-none-any.whl.metadata (7.6 kB)
+Collecting s3transfer<0.9.0,>=0.8.2 (from boto3>=1.12.18->cellxgene[prepare])
+  Downloading s3transfer-0.8.2-py3-none-any.whl.metadata (1.8 kB)
+Collecting Werkzeug>=2.2.2 (from Flask<2.3.0,>=1.0.2->cellxgene[prepare])
+  Downloading Werkzeug-2.2.3-py3-none-any.whl.metadata (4.4 kB)
+Collecting Jinja2>=3.0 (from Flask<2.3.0,>=1.0.2->cellxgene[prepare])
+  Downloading jinja2-3.1.4-py3-none-any.whl.metadata (2.6 kB)
+Collecting itsdangerous>=2.0 (from Flask<2.3.0,>=1.0.2->cellxgene[prepare])
+  Downloading itsdangerous-2.1.2-py3-none-any.whl.metadata (2.9 kB)
+Collecting brotli (from Flask-Compress>=1.4.0->cellxgene[prepare])
+  Downloading Brotli-1.1.0-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.whl.metadata (5.5 kB)
+Collecting zstandard (from Flask-Compress>=1.4.0->cellxgene[prepare])
+  Downloading zstandard-0.21.0-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (2.9 kB)
+Collecting aniso8601>=0.82 (from Flask-RESTful>=0.3.6->cellxgene[prepare])
+  Downloading aniso8601-9.0.1-py2.py3-none-any.whl.metadata (23 kB)
+Collecting six>=1.3.0 (from Flask-RESTful>=0.3.6->cellxgene[prepare])
+  Using cached six-1.16.0-py2.py3-none-any.whl.metadata (1.8 kB)
+Collecting pytz (from Flask-RESTful>=0.3.6->cellxgene[prepare])
+  Downloading pytz-2024.1-py2.py3-none-any.whl.metadata (22 kB)
+Collecting igraph<0.12,>=0.10.0 (from louvain>=0.6->cellxgene[prepare])
+  Downloading igraph-0.10.8-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (3.8 kB)
+Collecting llvmlite<0.40,>=0.39.0dev0 (from numba>=0.51.2->cellxgene[prepare])
+  Downloading llvmlite-0.39.1-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.7 kB)
+Requirement already satisfied: setuptools in /mambaforge/envs/cellxgene/lib/python3.7/site-packages (from numba>=0.51.2->cellxgene[prepare]) (69.0.3)
+Collecting python-dateutil>=2.7.3 (from pandas!=1.1,>=1.0->cellxgene[prepare])
+  Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+INFO: pip is looking at multiple versions of python-igraph to determine which version is compatible with other requirements. This could take a while.
+Collecting python-igraph>=0.8 (from cellxgene[prepare])
+  Downloading python_igraph-0.11.5-py3-none-any.whl.metadata (2.8 kB)
+  Downloading python_igraph-0.11.4-py3-none-any.whl.metadata (2.8 kB)
+  Downloading python_igraph-0.11.3-py3-none-any.whl.metadata (2.8 kB)
+  Downloading python_igraph-0.11.2-py3-none-any.whl.metadata (2.8 kB)
+  Downloading python_igraph-0.10.8-py3-none-any.whl.metadata (2.8 kB)
+Collecting texttable>=1.6.2 (from igraph<0.12,>=0.10.0->louvain>=0.6->cellxgene[prepare])
+  Downloading texttable-1.7.0-py2.py3-none-any.whl.metadata (9.8 kB)
+Collecting charset-normalizer<4,>=2 (from requests>=2.22.0->cellxgene[prepare])
+  Downloading charset_normalizer-3.3.2-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (33 kB)
+Collecting idna<4,>=2.5 (from requests>=2.22.0->cellxgene[prepare])
+  Downloading idna-3.7-py3-none-any.whl.metadata (9.9 kB)
+Collecting urllib3<3,>=1.21.1 (from requests>=2.22.0->cellxgene[prepare])
+  Downloading urllib3-2.0.7-py3-none-any.whl.metadata (6.6 kB)
+Collecting certifi>=2017.4.17 (from requests>=2.22.0->cellxgene[prepare])
+  Downloading certifi-2024.7.4-py3-none-any.whl.metadata (2.2 kB)
+Collecting scikit-learn>=0.20 (from umap-learn<0.5.0->cellxgene[prepare])
+  Downloading scikit_learn-1.0.2-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (10 kB)
+Collecting matplotlib>=3.4 (from scanpy->cellxgene[prepare])
+  Downloading matplotlib-3.5.3-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.whl.metadata (6.7 kB)
+Collecting seaborn (from scanpy->cellxgene[prepare])
+  Downloading seaborn-0.12.2-py3-none-any.whl.metadata (5.4 kB)
+Collecting tqdm (from scanpy->cellxgene[prepare])
+  Downloading tqdm-4.66.4-py3-none-any.whl.metadata (57 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 57.6/57.6 kB 2.0 MB/s eta 0:00:00
+Collecting statsmodels>=0.10.0rc2 (from scanpy->cellxgene[prepare])
+  Downloading statsmodels-0.13.5-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (9.5 kB)
+Collecting patsy (from scanpy->cellxgene[prepare])
+  Downloading patsy-0.5.6-py2.py3-none-any.whl.metadata (3.5 kB)
+Collecting networkx>=2.3 (from scanpy->cellxgene[prepare])
+  Downloading networkx-2.6.3-py3-none-any.whl.metadata (5.0 kB)
+Collecting joblib (from scanpy->cellxgene[prepare])
+  Downloading joblib-1.3.2-py3-none-any.whl.metadata (5.4 kB)
+Collecting session-info (from scanpy->cellxgene[prepare])
+  Downloading session_info-1.0.0.tar.gz (24 kB)
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): finished with status 'done'
+Collecting urllib3<3,>=1.21.1 (from requests>=2.22.0->cellxgene[prepare])
+  Downloading urllib3-1.26.19-py2.py3-none-any.whl.metadata (49 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 49.3/49.3 kB 2.2 MB/s eta 0:00:00
+Collecting zipp>=0.5 (from importlib_metadata>=0.7->anndata>=0.8.0->cellxgene[prepare])
+  Downloading zipp-3.15.0-py3-none-any.whl.metadata (3.7 kB)
+Collecting MarkupSafe>=2.0 (from Jinja2>=3.0->Flask<2.3.0,>=1.0.2->cellxgene[prepare])
+  Downloading MarkupSafe-2.1.5-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (3.0 kB)
+Collecting cycler>=0.10 (from matplotlib>=3.4->scanpy->cellxgene[prepare])
+  Downloading cycler-0.11.0-py3-none-any.whl.metadata (785 bytes)
+Collecting fonttools>=4.22.0 (from matplotlib>=3.4->scanpy->cellxgene[prepare])
+  Downloading fonttools-4.38.0-py3-none-any.whl.metadata (138 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 138.5/138.5 kB 5.2 MB/s eta 0:00:00
+Collecting kiwisolver>=1.0.1 (from matplotlib>=3.4->scanpy->cellxgene[prepare])
+  Downloading kiwisolver-1.4.5-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.whl.metadata (6.4 kB)
+Collecting pillow>=6.2.0 (from matplotlib>=3.4->scanpy->cellxgene[prepare])
+  Downloading Pillow-9.5.0-cp37-cp37m-manylinux_2_28_x86_64.whl.metadata (9.5 kB)
+Collecting pyparsing>=2.2.1 (from matplotlib>=3.4->scanpy->cellxgene[prepare])
+  Downloading pyparsing-3.1.2-py3-none-any.whl.metadata (5.1 kB)
+Collecting threadpoolctl>=2.0.0 (from scikit-learn>=0.20->umap-learn<0.5.0->cellxgene[prepare])
+  Downloading threadpoolctl-3.1.0-py3-none-any.whl.metadata (9.2 kB)
+Collecting stdlib_list (from session-info->scanpy->cellxgene[prepare])
+  Downloading stdlib_list-0.10.0-py3-none-any.whl.metadata (3.3 kB)
+Downloading s3fs-0.4.2-py3-none-any.whl (19 kB)
+Downloading anndata-0.8.0-py3-none-any.whl (96 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 96.1/96.1 kB 3.5 MB/s eta 0:00:00
+Downloading boto3-1.33.13-py3-none-any.whl (139 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 139.3/139.3 kB 3.9 MB/s eta 0:00:00
+Downloading click-8.1.7-py3-none-any.whl (97 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 97.9/97.9 kB 4.2 MB/s eta 0:00:00
+Downloading Flask-2.2.5-py3-none-any.whl (101 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 101.8/101.8 kB 3.4 MB/s eta 0:00:00
+Downloading Flask_Compress-1.15-py3-none-any.whl (8.6 kB)
+Downloading Flask_Cors-4.0.1-py2.py3-none-any.whl (14 kB)
+Downloading Flask_RESTful-0.3.10-py2.py3-none-any.whl (26 kB)
+Downloading flask_talisman-1.1.0-py2.py3-none-any.whl (18 kB)
+Downloading flatbuffers-1.12-py2.py3-none-any.whl (15 kB)
+Downloading flatten_dict-0.4.2-py2.py3-none-any.whl (9.7 kB)
+Downloading fsspec-0.7.4-py3-none-any.whl (75 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 75.8/75.8 kB 3.0 MB/s eta 0:00:00
+Downloading gunicorn-22.0.0-py3-none-any.whl (84 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 84.4/84.4 kB 2.4 MB/s eta 0:00:00
+Downloading h5py-3.8.0-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (4.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.3/4.3 MB 48.1 MB/s eta 0:00:00
+Downloading louvain-0.8.2-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (1.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.1/1.1 MB 21.4 MB/s eta 0:00:00
+Downloading numba-0.56.4-cp37-cp37m-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (3.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.5/3.5 MB 46.0 MB/s eta 0:00:00
+Downloading numpy-1.21.6-cp37-cp37m-manylinux_2_12_x86_64.manylinux2010_x86_64.whl (15.7 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.7/15.7 MB 61.0 MB/s eta 0:00:00
+Downloading packaging-24.0-py3-none-any.whl (53 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 53.5/53.5 kB 1.3 MB/s eta 0:00:00
+Downloading pandas-1.3.5-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (11.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.3/11.3 MB 67.9 MB/s eta 0:00:00
+Downloading python_igraph-0.10.8-py3-none-any.whl (9.1 kB)
+Downloading igraph-0.10.8-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.3/3.3 MB 52.7 MB/s eta 0:00:00
+Downloading PyYAML-6.0.1-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (670 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 670.1/670.1 kB 23.1 MB/s eta 0:00:00
+Downloading requests-2.31.0-py3-none-any.whl (62 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 62.6/62.6 kB 3.0 MB/s eta 0:00:00
+Downloading scipy-1.7.3-cp37-cp37m-manylinux_2_12_x86_64.manylinux2010_x86_64.whl (38.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 38.1/38.1 MB 47.1 MB/s eta 0:00:00
+Downloading scanpy-1.9.3-py3-none-any.whl (2.0 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.0/2.0 MB 39.9 MB/s eta 0:00:00
+Downloading aniso8601-9.0.1-py2.py3-none-any.whl (52 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 52.8/52.8 kB 2.4 MB/s eta 0:00:00
+Downloading botocore-1.33.13-py3-none-any.whl (11.8 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.8/11.8 MB 67.7 MB/s eta 0:00:00
+Downloading certifi-2024.7.4-py3-none-any.whl (162 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 163.0/163.0 kB 6.3 MB/s eta 0:00:00
+Downloading charset_normalizer-3.3.2-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (136 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 136.8/136.8 kB 7.3 MB/s eta 0:00:00
+Downloading idna-3.7-py3-none-any.whl (66 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 66.8/66.8 kB 3.3 MB/s eta 0:00:00
+Downloading importlib_metadata-6.7.0-py3-none-any.whl (22 kB)
+Downloading itsdangerous-2.1.2-py3-none-any.whl (15 kB)
+Downloading jinja2-3.1.4-py3-none-any.whl (133 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 133.3/133.3 kB 6.2 MB/s eta 0:00:00
+Using cached jmespath-1.0.1-py3-none-any.whl (20 kB)
+Downloading llvmlite-0.39.1-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (34.6 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 34.6/34.6 MB 45.0 MB/s eta 0:00:00
+Downloading matplotlib-3.5.3-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.whl (11.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.2/11.2 MB 71.3 MB/s eta 0:00:00
+Downloading networkx-2.6.3-py3-none-any.whl (1.9 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.9/1.9 MB 51.9 MB/s eta 0:00:00
+Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+Downloading pytz-2024.1-py2.py3-none-any.whl (505 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 505.5/505.5 kB 30.3 MB/s eta 0:00:00
+Downloading s3transfer-0.8.2-py3-none-any.whl (82 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 82.0/82.0 kB 8.4 MB/s eta 0:00:00
+Downloading scikit_learn-1.0.2-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (24.8 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 24.8/24.8 MB 51.2 MB/s eta 0:00:00
+Downloading joblib-1.3.2-py3-none-any.whl (302 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 302.2/302.2 kB 26.1 MB/s eta 0:00:00
+Using cached six-1.16.0-py2.py3-none-any.whl (11 kB)
+Downloading statsmodels-0.13.5-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (9.9 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.9/9.9 MB 59.3 MB/s eta 0:00:00
+Downloading patsy-0.5.6-py2.py3-none-any.whl (233 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 233.9/233.9 kB 20.3 MB/s eta 0:00:00
+Downloading typing_extensions-4.7.1-py3-none-any.whl (33 kB)
+Downloading urllib3-1.26.19-py2.py3-none-any.whl (143 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 143.9/143.9 kB 13.9 MB/s eta 0:00:00
+Downloading Werkzeug-2.2.3-py3-none-any.whl (233 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 233.6/233.6 kB 20.3 MB/s eta 0:00:00
+Downloading Brotli-1.1.0-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.whl (2.8 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.8/2.8 MB 51.7 MB/s eta 0:00:00
+Downloading natsort-8.4.0-py3-none-any.whl (38 kB)
+Downloading seaborn-0.12.2-py3-none-any.whl (293 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 293.3/293.3 kB 12.5 MB/s eta 0:00:00
+Downloading tqdm-4.66.4-py3-none-any.whl (78 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 78.3/78.3 kB 8.0 MB/s eta 0:00:00
+Downloading zstandard-0.21.0-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.7 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.7/2.7 MB 59.6 MB/s eta 0:00:00
+Downloading cycler-0.11.0-py3-none-any.whl (6.4 kB)
+Downloading fonttools-4.38.0-py3-none-any.whl (965 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 965.4/965.4 kB 48.5 MB/s eta 0:00:00
+Downloading kiwisolver-1.4.5-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.whl (1.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.1/1.1 MB 50.9 MB/s eta 0:00:00
+Downloading MarkupSafe-2.1.5-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (25 kB)
+Downloading Pillow-9.5.0-cp37-cp37m-manylinux_2_28_x86_64.whl (3.4 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.4/3.4 MB 60.8 MB/s eta 0:00:00
+Downloading pyparsing-3.1.2-py3-none-any.whl (103 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 103.2/103.2 kB 9.9 MB/s eta 0:00:00
+Downloading texttable-1.7.0-py2.py3-none-any.whl (10 kB)
+Downloading threadpoolctl-3.1.0-py3-none-any.whl (14 kB)
+Downloading zipp-3.15.0-py3-none-any.whl (6.8 kB)
+Downloading stdlib_list-0.10.0-py3-none-any.whl (79 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 79.8/79.8 kB 8.1 MB/s eta 0:00:00
+Building wheels for collected packages: flask-server-timing, umap-learn, cellxgene, session-info
+  Building wheel for flask-server-timing (setup.py): started
+  Building wheel for flask-server-timing (setup.py): finished with status 'done'
+  Created wheel for flask-server-timing: filename=flask_server_timing-0.1.2-py3-none-any.whl size=3518 sha256=3d26e8c3ebbbb40b8970e5f6ddc057b8602c4562ccd891cdc6f20d365afb448d
+  Stored in directory: /root/.cache/pip/wheels/90/29/b7/40608df14b590b781b668fbdb01a19dd906e7b5e3cff143a39
+  Building wheel for umap-learn (setup.py): started
+  Building wheel for umap-learn (setup.py): finished with status 'done'
+  Created wheel for umap-learn: filename=umap_learn-0.4.6-py3-none-any.whl size=67926 sha256=d7ee2b108d89030355c4f9860a8a416aca44917fc0bff9035558a01f7ef96ca8
+  Stored in directory: /root/.cache/pip/wheels/14/9a/ed/66159a5e13d3b6341b6542cf4f1faf478834753bed5ecaef8d
+  Building wheel for cellxgene (setup.py): started
+  Building wheel for cellxgene (setup.py): finished with status 'done'
+  Created wheel for cellxgene: filename=cellxgene-1.1.2-py3-none-any.whl size=2913715 sha256=b87388c61d210d01afa65f89de2d201e5e502c469f57372afac96089ae0c4adf
+  Stored in directory: /root/.cache/pip/wheels/53/3b/e7/c586684f748aec077e170583eb4732e3573f130e710e0ab134
+  Building wheel for session-info (setup.py): started
+  Building wheel for session-info (setup.py): finished with status 'done'
+  Created wheel for session-info: filename=session_info-1.0.0-py3-none-any.whl size=8023 sha256=1f787663251a87d076dd125d1589ea82a9f133e57347a10b2e217aeec46d40c7
+  Stored in directory: /root/.cache/pip/wheels/bd/ad/14/6a42359351a18337a8683854cfbba99dd782271f2d1767f87f
+Successfully built flask-server-timing umap-learn cellxgene session-info
+Installing collected packages: texttable, pytz, flatbuffers, flask-talisman, brotli, aniso8601, zstandard, zipp, urllib3, typing_extensions, tqdm, threadpoolctl, stdlib_list, six, PyYAML, pyparsing, pillow, packaging, numpy, networkx, natsort, MarkupSafe, llvmlite, joblib, jmespath, itsdangerous, igraph, idna, fsspec, fonttools, cycler, charset-normalizer, certifi, Werkzeug, session-info, scipy, requests, python-igraph, python-dateutil, patsy, louvain, kiwisolver, Jinja2, importlib_metadata, h5py, scikit-learn, pandas, numba, matplotlib, gunicorn, flatten-dict, click, botocore, umap-learn, statsmodels, seaborn, s3transfer, s3fs, Flask, anndata, scanpy, flask-server-timing, Flask-RESTful, Flask-Cors, Flask-Compress, boto3, cellxgene
+Successfully installed Flask-2.2.5 Flask-Compress-1.15 Flask-Cors-4.0.1 Flask-RESTful-0.3.10 Jinja2-3.1.4 MarkupSafe-2.1.5 PyYAML-6.0.1 Werkzeug-2.2.3 aniso8601-9.0.1 anndata-0.8.0 boto3-1.33.13 botocore-1.33.13 brotli-1.1.0 cellxgene-1.1.2 certifi-2024.7.4 charset-normalizer-3.3.2 click-8.1.7 cycler-0.11.0 flask-server-timing-0.1.2 flask-talisman-1.1.0 flatbuffers-1.12 flatten-dict-0.4.2 fonttools-4.38.0 fsspec-0.7.4 gunicorn-22.0.0 h5py-3.8.0 idna-3.7 igraph-0.10.8 importlib_metadata-6.7.0 itsdangerous-2.1.2 jmespath-1.0.1 joblib-1.3.2 kiwisolver-1.4.5 llvmlite-0.39.1 louvain-0.8.2 matplotlib-3.5.3 natsort-8.4.0 networkx-2.6.3 numba-0.56.4 numpy-1.21.6 packaging-24.0 pandas-1.3.5 patsy-0.5.6 pillow-9.5.0 pyparsing-3.1.2 python-dateutil-2.9.0.post0 python-igraph-0.10.8 pytz-2024.1 requests-2.31.0 s3fs-0.4.2 s3transfer-0.8.2 scanpy-1.9.3 scikit-learn-1.0.2 scipy-1.7.3 seaborn-0.12.2 session-info-1.0.0 six-1.16.0 statsmodels-0.13.5 stdlib_list-0.10.0 texttable-1.7.0 threadpoolctl-3.1.0 tqdm-4.66.4 typing_extensions-4.7.1 umap-learn-0.4.6 urllib3-1.26.19 zipp-3.15.0 zstandard-0.21.0
+
+
+ ---> af0a146f320c
+
+Step 10/15 : run pip install latch==2.48.3
+
+
+ ---> Running in ef6f49077c53
+
+[91mpip install latch==2.48.3
+[0m
+Collecting latch==2.48.3
+
+  Downloading latch-2.48.3-py3-none-any.whl.metadata (1.4 kB)
+
+Collecting kubernetes>=24.2.0 (from latch==2.48.3)
+
+  Downloading kubernetes-30.1.0-py2.py3-none-any.whl.metadata (1.5 kB)
+
+Collecting pyjwt>=0.2.0 (from latch==2.48.3)
+
+  Downloading PyJWT-2.8.0-py3-none-any.whl.metadata (4.2 kB)
+
+Requirement already satisfied: requests>=2.28.1 in /mambaforge/lib/python3.10/site-packages (from latch==2.48.3) (2.31.0)
+
+Collecting click>=8.0 (from latch==2.48.3)
+
+  Using cached click-8.1.7-py3-none-any.whl.metadata (3.0 kB)
+
+Collecting docker>=7.1.0 (from latch==2.48.3)
+
+  Downloading docker-7.1.0-py3-none-any.whl.metadata (3.8 kB)
+
+Collecting paramiko>=3.2.0 (from latch==2.48.3)
+
+  Downloading paramiko-3.4.0-py3-none-any.whl.metadata (4.4 kB)
+
+Collecting scp>=0.14.0 (from latch==2.48.3)
+
+  Downloading scp-0.15.0-py2.py3-none-any.whl.metadata (4.3 kB)
+
+Collecting boto3>=1.26.0 (from latch==2.48.3)
+
+  Downloading boto3-1.34.146-py3-none-any.whl.metadata (6.6 kB)
+
+Requirement already satisfied: tqdm>=4.63.0 in /mambaforge/lib/python3.10/site-packages (from latch==2.48.3) (4.66.2)
+
+Collecting lytekit==0.15.10 (from latch==2.48.3)
+
+  Downloading lytekit-0.15.10-py3-none-any.whl.metadata (5.7 kB)
+
+Collecting lytekitplugins-pods==0.6.2 (from latch==2.48.3)
+
+  Downloading lytekitplugins_pods-0.6.2-py3-none-any.whl.metadata (915 bytes)
+
+Collecting typing-extensions==4.7.1 (from latch==2.48.3)
+
+  Using cached typing_extensions-4.7.1-py3-none-any.whl.metadata (3.1 kB)
+
+Collecting apscheduler==3.9.1 (from latch==2.48.3)
+
+  Downloading APScheduler-3.9.1-py2.py3-none-any.whl.metadata (6.2 kB)
+
+Collecting gql==3.4.0 (from latch==2.48.3)
+
+  Downloading gql-3.4.0-py2.py3-none-any.whl.metadata (9.2 kB)
+
+Collecting graphql-core==3.2.3 (from latch==2.48.3)
+
+  Downloading graphql_core-3.2.3-py3-none-any.whl.metadata (10 kB)
+
+Collecting requests-toolbelt==0.10.1 (from latch==2.48.3)
+
+  Downloading requests_toolbelt-0.10.1-py2.py3-none-any.whl.metadata (14 kB)
+
+Collecting latch-sdk-gql==0.0.6 (from latch==2.48.3)
+
+  Downloading latch_sdk_gql-0.0.6-py3-none-any.whl.metadata (593 bytes)
+
+Collecting latch-sdk-config==0.0.4 (from latch==2.48.3)
+
+  Downloading latch_sdk_config-0.0.4-py3-none-any.whl.metadata (448 bytes)
+
+Collecting python-dateutil>=2.8 (from latch==2.48.3)
+
+  Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+
+Collecting aioconsole==0.6.1 (from latch==2.48.3)
+
+  Downloading aioconsole-0.6.1-py3-none-any.whl.metadata (5.2 kB)
+
+Collecting asyncssh==2.13.2 (from latch==2.48.3)
+
+  Downloading asyncssh-2.13.2-py3-none-any.whl.metadata (9.8 kB)
+
+Collecting websockets==11.0.3 (from latch==2.48.3)
+
+  Downloading websockets-11.0.3-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.6 kB)
+
+Collecting watchfiles==0.19.0 (from latch==2.48.3)
+
+  Downloading watchfiles-0.19.0-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.9 kB)
+
+Requirement already satisfied: setuptools>=0.7 in /mambaforge/lib/python3.10/site-packages (from apscheduler==3.9.1->latch==2.48.3) (69.5.1)
+
+Collecting six>=1.4.0 (from apscheduler==3.9.1->latch==2.48.3)
+
+  Using cached six-1.16.0-py2.py3-none-any.whl.metadata (1.8 kB)
+
+Collecting pytz (from apscheduler==3.9.1->latch==2.48.3)
+
+  Using cached pytz-2024.1-py2.py3-none-any.whl.metadata (22 kB)
+
+Collecting tzlocal!=3.*,>=2.0 (from apscheduler==3.9.1->latch==2.48.3)
+
+  Downloading tzlocal-5.2-py3-none-any.whl.metadata (7.8 kB)
+
+Collecting cryptography>=3.1 (from asyncssh==2.13.2->latch==2.48.3)
+
+  Downloading cryptography-43.0.0-cp39-abi3-manylinux_2_28_x86_64.whl.metadata (5.4 kB)
+
+Collecting yarl<2.0,>=1.6 (from gql==3.4.0->latch==2.48.3)
+
+  Downloading yarl-1.9.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (31 kB)
+
+Collecting backoff<3.0,>=1.11.1 (from gql==3.4.0->latch==2.48.3)
+
+  Downloading backoff-2.2.1-py3-none-any.whl.metadata (14 kB)
+
+Collecting lyteidl==0.2.0a0 (from lytekit==0.15.10->latch==2.48.3)
+
+  Downloading lyteidl-0.2.0a0-py3-none-any.whl.metadata (405 bytes)
+
+Requirement already satisfied: wheel<1.0.0,>=0.30.0 in /mambaforge/lib/python3.10/site-packages (from lytekit==0.15.10->latch==2.48.3) (0.43.0)
+
+Collecting croniter<4.0.0,>=0.3.20 (from lytekit==0.15.10->latch==2.48.3)
+
+  Downloading croniter-2.0.7-py2.py3-none-any.whl.metadata (27 kB)
+
+Collecting deprecated<2.0,>=1.0 (from lytekit==0.15.10->latch==2.48.3)
+
+  Downloading Deprecated-1.2.14-py2.py3-none-any.whl.metadata (5.4 kB)
+
+Collecting grpcio!=1.45.0,<2.0,>=1.43.0 (from lytekit==0.15.10->latch==2.48.3)
+
+  Downloading grpcio-1.65.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (3.3 kB)
+
+Collecting grpcio-status!=1.45.0,>=1.43 (from lytekit==0.15.10->latch==2.48.3)
+
+  Downloading grpcio_status-1.65.1-py3-none-any.whl.metadata (1.1 kB)
+
+Collecting protobuf<4,>=3.6.1 (from lytekit==0.15.10->latch==2.48.3)
+
+  Downloading protobuf-3.20.3-cp310-cp310-manylinux_2_12_x86_64.manylinux2010_x86_64.whl.metadata (679 bytes)
+
+Collecting python-json-logger>=2.0.0 (from lytekit==0.15.10->latch==2.48.3)
+
+  Downloading python_json_logger-2.0.7-py3-none-any.whl.metadata (6.5 kB)
+
+Collecting pytimeparse<2.0.0,>=1.1.8 (from lytekit==0.15.10->latch==2.48.3)
+
+  Downloading pytimeparse-1.1.8-py2.py3-none-any.whl.metadata (3.4 kB)
+
+Collecting keyring>=18.0.1 (from lytekit==0.15.10->latch==2.48.3)
+
+  Downloading keyring-25.2.1-py3-none-any.whl.metadata (20 kB)
+
+Collecting responses>=0.10.7 (from lytekit==0.15.10->latch==2.48.3)
+
+  Downloading responses-0.25.3-py3-none-any.whl.metadata (46 kB)
+
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 46.7/46.7 kB 4.6 MB/s eta 0:00:00
+
+
+Collecting sortedcontainers<3.0.0,>=1.5.9 (from lytekit==0.15.10->latch==2.48.3)
+
+  Downloading sortedcontainers-2.4.0-py2.py3-none-any.whl.metadata (10 kB)
+
+Collecting statsd<4.0.0,>=3.0.0 (from lytekit==0.15.10->latch==2.48.3)
+
+  Downloading statsd-3.3.0-py2.py3-none-any.whl.metadata (2.8 kB)
+
+Collecting urllib3<2.0.0,>=1.22 (from lytekit==0.15.10->latch==2.48.3)
+
+  Using cached urllib3-1.26.19-py2.py3-none-any.whl.metadata (49 kB)
+
+Collecting wrapt<2.0.0,>=1.0.0 (from lytekit==0.15.10->latch==2.48.3)
+
+  Downloading wrapt-1.16.0-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.6 kB)
+
+Collecting retry==0.9.2 (from lytekit==0.15.10->latch==2.48.3)
+
+  Downloading retry-0.9.2-py2.py3-none-any.whl.metadata (5.8 kB)
+
+Collecting dataclasses-json<=0.5.6,>=0.5.2 (from lytekit==0.15.10->latch==2.48.3)
+
+  Downloading dataclasses_json-0.5.6-py3-none-any.whl.metadata (22 kB)
+
+Collecting jsonschema>=4.5.1 (from lytekit==0.15.10->latch==2.48.3)
+
+  Downloading jsonschema-4.23.0-py3-none-any.whl.metadata (7.9 kB)
+
+Collecting marshmallow-jsonschema>=0.12.0 (from lytekit==0.15.10->latch==2.48.3)
+
+  Downloading marshmallow_jsonschema-0.13.0-py3-none-any.whl.metadata (7.5 kB)
+
+Collecting marshmallow-enum (from lytekit==0.15.10->latch==2.48.3)
+
+  Downloading marshmallow_enum-1.5.1-py2.py3-none-any.whl.metadata (2.5 kB)
+
+Collecting natsort>=7.0.1 (from lytekit==0.15.10->latch==2.48.3)
+
+  Using cached natsort-8.4.0-py3-none-any.whl.metadata (21 kB)
+
+Collecting docker-image-py>=0.1.10 (from lytekit==0.15.10->latch==2.48.3)
+
+  Downloading docker_image_py-0.1.13-py3-none-any.whl.metadata (223 bytes)
+
+Collecting docstring-parser>=0.9.0 (from lytekit==0.15.10->latch==2.48.3)
+
+  Downloading docstring_parser-0.16-py3-none-any.whl.metadata (3.0 kB)
+
+Collecting diskcache>=5.2.1 (from lytekit==0.15.10->latch==2.48.3)
+
+  Downloading diskcache-5.6.3-py3-none-any.whl.metadata (20 kB)
+
+Collecting cloudpickle>=2.0.0 (from lytekit==0.15.10->latch==2.48.3)
+
+  Downloading cloudpickle-3.0.0-py3-none-any.whl.metadata (7.0 kB)
+
+Collecting cookiecutter>=1.7.3 (from lytekit==0.15.10->latch==2.48.3)
+
+  Downloading cookiecutter-2.6.0-py3-none-any.whl.metadata (7.3 kB)
+
+Collecting anyio>=3.0.0 (from watchfiles==0.19.0->latch==2.48.3)
+
+  Downloading anyio-4.4.0-py3-none-any.whl.metadata (4.6 kB)
+
+Collecting googleapis-common-protos (from lyteidl==0.2.0a0->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading googleapis_common_protos-1.63.2-py2.py3-none-any.whl.metadata (1.5 kB)
+
+Collecting protoc-gen-swagger (from lyteidl==0.2.0a0->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading protoc_gen_swagger-0.1.0-py2.py3-none-any.whl.metadata (2.3 kB)
+
+Collecting decorator>=3.4.2 (from retry==0.9.2->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading decorator-5.1.1-py3-none-any.whl.metadata (4.0 kB)
+
+Collecting py<2.0.0,>=1.4.26 (from retry==0.9.2->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading py-1.11.0-py2.py3-none-any.whl.metadata (2.8 kB)
+
+Collecting botocore<1.35.0,>=1.34.146 (from boto3>=1.26.0->latch==2.48.3)
+
+  Downloading botocore-1.34.146-py3-none-any.whl.metadata (5.7 kB)
+
+Collecting jmespath<2.0.0,>=0.7.1 (from boto3>=1.26.0->latch==2.48.3)
+
+  Using cached jmespath-1.0.1-py3-none-any.whl.metadata (7.6 kB)
+
+Collecting s3transfer<0.11.0,>=0.10.0 (from boto3>=1.26.0->latch==2.48.3)
+
+  Using cached s3transfer-0.10.2-py3-none-any.whl.metadata (1.7 kB)
+
+Requirement already satisfied: certifi>=14.05.14 in /mambaforge/lib/python3.10/site-packages (from kubernetes>=24.2.0->latch==2.48.3) (2024.2.2)
+
+Collecting pyyaml>=5.4.1 (from kubernetes>=24.2.0->latch==2.48.3)
+
+  Downloading PyYAML-6.0.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (2.1 kB)
+
+Collecting google-auth>=1.0.1 (from kubernetes>=24.2.0->latch==2.48.3)
+
+  Downloading google_auth-2.32.0-py2.py3-none-any.whl.metadata (4.7 kB)
+
+Collecting websocket-client!=0.40.0,!=0.41.*,!=0.42.*,>=0.32.0 (from kubernetes>=24.2.0->latch==2.48.3)
+
+  Downloading websocket_client-1.8.0-py3-none-any.whl.metadata (8.0 kB)
+
+Collecting requests-oauthlib (from kubernetes>=24.2.0->latch==2.48.3)
+
+  Downloading requests_oauthlib-2.0.0-py2.py3-none-any.whl.metadata (11 kB)
+
+Collecting oauthlib>=3.2.2 (from kubernetes>=24.2.0->latch==2.48.3)
+
+  Downloading oauthlib-3.2.2-py3-none-any.whl.metadata (7.5 kB)
+
+Collecting bcrypt>=3.2 (from paramiko>=3.2.0->latch==2.48.3)
+
+  Downloading bcrypt-4.2.0-cp39-abi3-manylinux_2_28_x86_64.whl.metadata (9.6 kB)
+
+Collecting pynacl>=1.5 (from paramiko>=3.2.0->latch==2.48.3)
+
+  Downloading PyNaCl-1.5.0-cp36-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_24_x86_64.whl.metadata (8.6 kB)
+
+Requirement already satisfied: charset-normalizer<4,>=2 in /mambaforge/lib/python3.10/site-packages (from requests>=2.28.1->latch==2.48.3) (3.3.2)
+
+Requirement already satisfied: idna<4,>=2.5 in /mambaforge/lib/python3.10/site-packages (from requests>=2.28.1->latch==2.48.3) (3.6)
+
+Collecting sniffio>=1.1 (from anyio>=3.0.0->watchfiles==0.19.0->latch==2.48.3)
+
+  Downloading sniffio-1.3.1-py3-none-any.whl.metadata (3.9 kB)
+
+Collecting exceptiongroup>=1.0.2 (from anyio>=3.0.0->watchfiles==0.19.0->latch==2.48.3)
+
+  Downloading exceptiongroup-1.2.2-py3-none-any.whl.metadata (6.6 kB)
+
+Collecting binaryornot>=0.4.4 (from cookiecutter>=1.7.3->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading binaryornot-0.4.4-py2.py3-none-any.whl.metadata (6.0 kB)
+
+Collecting Jinja2<4.0.0,>=2.7 (from cookiecutter>=1.7.3->lytekit==0.15.10->latch==2.48.3)
+
+  Using cached jinja2-3.1.4-py3-none-any.whl.metadata (2.6 kB)
+
+Collecting python-slugify>=4.0.0 (from cookiecutter>=1.7.3->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading python_slugify-8.0.4-py2.py3-none-any.whl.metadata (8.5 kB)
+
+Collecting arrow (from cookiecutter>=1.7.3->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading arrow-1.3.0-py3-none-any.whl.metadata (7.5 kB)
+
+Collecting rich (from cookiecutter>=1.7.3->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading rich-13.7.1-py3-none-any.whl.metadata (18 kB)
+
+Requirement already satisfied: cffi>=1.12 in /mambaforge/lib/python3.10/site-packages (from cryptography>=3.1->asyncssh==2.13.2->latch==2.48.3) (1.16.0)
+
+Collecting marshmallow<4.0.0,>=3.3.0 (from dataclasses-json<=0.5.6,>=0.5.2->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading marshmallow-3.21.3-py3-none-any.whl.metadata (7.1 kB)
+
+Collecting typing-inspect>=0.4.0 (from dataclasses-json<=0.5.6,>=0.5.2->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading typing_inspect-0.9.0-py3-none-any.whl.metadata (1.5 kB)
+
+Collecting regex>=2019.4.14 (from docker-image-py>=0.1.10->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading regex-2024.5.15-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (40 kB)
+
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 40.9/40.9 kB 3.9 MB/s eta 0:00:00
+
+
+Collecting cachetools<6.0,>=2.0.0 (from google-auth>=1.0.1->kubernetes>=24.2.0->latch==2.48.3)
+
+  Downloading cachetools-5.4.0-py3-none-any.whl.metadata (5.3 kB)
+
+Collecting pyasn1-modules>=0.2.1 (from google-auth>=1.0.1->kubernetes>=24.2.0->latch==2.48.3)
+
+  Downloading pyasn1_modules-0.4.0-py3-none-any.whl.metadata (3.4 kB)
+
+Collecting rsa<5,>=3.1.4 (from google-auth>=1.0.1->kubernetes>=24.2.0->latch==2.48.3)
+
+  Downloading rsa-4.9-py3-none-any.whl.metadata (4.2 kB)
+
+INFO: pip is looking at multiple versions of grpcio-status to determine which version is compatible with other requirements. This could take a while.
+
+Collecting grpcio-status!=1.45.0,>=1.43 (from lytekit==0.15.10->latch==2.48.3)
+
+  Downloading grpcio_status-1.64.1-py3-none-any.whl.metadata (1.1 kB)
+
+  Downloading grpcio_status-1.64.0-py3-none-any.whl.metadata (1.1 kB)
+
+  Downloading grpcio_status-1.63.0-py3-none-any.whl.metadata (1.1 kB)
+
+  Downloading grpcio_status-1.62.2-py3-none-any.whl.metadata (1.3 kB)
+
+  Downloading grpcio_status-1.62.1-py3-none-any.whl.metadata (1.3 kB)
+
+  Downloading grpcio_status-1.62.0-py3-none-any.whl.metadata (1.3 kB)
+
+  Downloading grpcio_status-1.60.1-py3-none-any.whl.metadata (1.3 kB)
+
+INFO: pip is still looking at multiple versions of grpcio-status to determine which version is compatible with other requirements. This could take a while.
+
+  Downloading grpcio_status-1.60.0-py3-none-any.whl.metadata (1.3 kB)
+
+  Downloading grpcio_status-1.59.3-py3-none-any.whl.metadata (1.3 kB)
+
+  Downloading grpcio_status-1.59.2-py3-none-any.whl.metadata (1.3 kB)
+
+  Downloading grpcio_status-1.59.0-py3-none-any.whl.metadata (1.3 kB)
+
+  Downloading grpcio_status-1.58.0-py3-none-any.whl.metadata (1.3 kB)
+
+INFO: This is taking longer than usual. You might need to provide the dependency resolver with stricter constraints to reduce runtime. See https://pip.pypa.io/warnings/backtracking for guidance. If you want to abort this run, press Ctrl + C.
+
+  Downloading grpcio_status-1.57.0-py3-none-any.whl.metadata (1.2 kB)
+
+  Downloading grpcio_status-1.56.2-py3-none-any.whl.metadata (1.3 kB)
+
+  Downloading grpcio_status-1.56.0-py3-none-any.whl.metadata (1.3 kB)
+
+  Downloading grpcio_status-1.55.3-py3-none-any.whl.metadata (1.3 kB)
+
+  Downloading grpcio_status-1.54.3-py3-none-any.whl.metadata (1.3 kB)
+
+  Downloading grpcio_status-1.54.2-py3-none-any.whl.metadata (1.3 kB)
+
+  Downloading grpcio_status-1.54.0-py3-none-any.whl.metadata (1.3 kB)
+
+  Downloading grpcio_status-1.53.2-py3-none-any.whl.metadata (1.3 kB)
+
+  Downloading grpcio_status-1.53.1-py3-none-any.whl.metadata (1.3 kB)
+
+  Downloading grpcio_status-1.53.0-py3-none-any.whl.metadata (1.3 kB)
+
+  Downloading grpcio_status-1.51.3-py3-none-any.whl.metadata (1.3 kB)
+
+  Downloading grpcio_status-1.51.1-py3-none-any.whl.metadata (1.3 kB)
+
+  Downloading grpcio_status-1.50.0-py3-none-any.whl.metadata (1.3 kB)
+
+  Downloading grpcio_status-1.49.1-py3-none-any.whl.metadata (1.3 kB)
+
+  Downloading grpcio_status-1.48.2-py3-none-any.whl.metadata (1.2 kB)
+
+Collecting attrs>=22.2.0 (from jsonschema>=4.5.1->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading attrs-23.2.0-py3-none-any.whl.metadata (9.5 kB)
+
+Collecting jsonschema-specifications>=2023.03.6 (from jsonschema>=4.5.1->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading jsonschema_specifications-2023.12.1-py3-none-any.whl.metadata (3.0 kB)
+
+Collecting referencing>=0.28.4 (from jsonschema>=4.5.1->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading referencing-0.35.1-py3-none-any.whl.metadata (2.8 kB)
+
+Collecting rpds-py>=0.7.1 (from jsonschema>=4.5.1->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading rpds_py-0.19.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.1 kB)
+
+Collecting jaraco.classes (from keyring>=18.0.1->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading jaraco.classes-3.4.0-py3-none-any.whl.metadata (2.6 kB)
+
+Collecting jaraco.functools (from keyring>=18.0.1->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading jaraco.functools-4.0.1-py3-none-any.whl.metadata (2.9 kB)
+
+Collecting jaraco.context (from keyring>=18.0.1->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading jaraco.context-5.3.0-py3-none-any.whl.metadata (4.0 kB)
+
+Collecting importlib-metadata>=4.11.4 (from keyring>=18.0.1->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading importlib_metadata-8.0.0-py3-none-any.whl.metadata (4.6 kB)
+
+Collecting SecretStorage>=3.2 (from keyring>=18.0.1->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading SecretStorage-3.3.3-py3-none-any.whl.metadata (4.0 kB)
+
+Collecting jeepney>=0.4.2 (from keyring>=18.0.1->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading jeepney-0.8.0-py3-none-any.whl.metadata (1.3 kB)
+
+Collecting multidict>=4.0 (from yarl<2.0,>=1.6->gql==3.4.0->latch==2.48.3)
+
+  Downloading multidict-6.0.5-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.2 kB)
+
+Collecting chardet>=3.0.2 (from binaryornot>=0.4.4->cookiecutter>=1.7.3->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading chardet-5.2.0-py3-none-any.whl.metadata (3.4 kB)
+
+Requirement already satisfied: pycparser in /mambaforge/lib/python3.10/site-packages (from cffi>=1.12->cryptography>=3.1->asyncssh==2.13.2->latch==2.48.3) (2.22)
+
+Collecting zipp>=0.5 (from importlib-metadata>=4.11.4->keyring>=18.0.1->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading zipp-3.19.2-py3-none-any.whl.metadata (3.6 kB)
+
+Collecting MarkupSafe>=2.0 (from Jinja2<4.0.0,>=2.7->cookiecutter>=1.7.3->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading MarkupSafe-2.1.5-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (3.0 kB)
+
+Requirement already satisfied: packaging>=17.0 in /mambaforge/lib/python3.10/site-packages (from marshmallow<4.0.0,>=3.3.0->dataclasses-json<=0.5.6,>=0.5.2->lytekit==0.15.10->latch==2.48.3) (24.0)
+
+Collecting pyasn1<0.7.0,>=0.4.6 (from pyasn1-modules>=0.2.1->google-auth>=1.0.1->kubernetes>=24.2.0->latch==2.48.3)
+
+  Using cached pyasn1-0.6.0-py2.py3-none-any.whl.metadata (8.3 kB)
+
+Collecting text-unidecode>=1.3 (from python-slugify>=4.0.0->cookiecutter>=1.7.3->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading text_unidecode-1.3-py2.py3-none-any.whl.metadata (2.4 kB)
+
+Collecting mypy-extensions>=0.3.0 (from typing-inspect>=0.4.0->dataclasses-json<=0.5.6,>=0.5.2->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading mypy_extensions-1.0.0-py3-none-any.whl.metadata (1.1 kB)
+
+Collecting types-python-dateutil>=2.8.10 (from arrow->cookiecutter>=1.7.3->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading types_python_dateutil-2.9.0.20240316-py3-none-any.whl.metadata (1.8 kB)
+
+Collecting more-itertools (from jaraco.classes->keyring>=18.0.1->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading more_itertools-10.3.0-py3-none-any.whl.metadata (36 kB)
+
+Collecting backports.tarfile (from jaraco.context->keyring>=18.0.1->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading backports.tarfile-1.2.0-py3-none-any.whl.metadata (2.0 kB)
+
+Collecting markdown-it-py>=2.2.0 (from rich->cookiecutter>=1.7.3->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading markdown_it_py-3.0.0-py3-none-any.whl.metadata (6.9 kB)
+
+Collecting pygments<3.0.0,>=2.13.0 (from rich->cookiecutter>=1.7.3->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading pygments-2.18.0-py3-none-any.whl.metadata (2.5 kB)
+
+Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich->cookiecutter>=1.7.3->lytekit==0.15.10->latch==2.48.3)
+
+  Downloading mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+
+[91mWARNING: The candidate selected for download or install is a yanked version: 'apscheduler' candidate (version 3.9.1 at https://files.pythonhosted.org/packages/e4/9f/c3937d4babe62504b874d4bf2c0d85aa69c7f59fa84cf6050f3b9dc5d83e/APScheduler-3.9.1-py2.py3-none-any.whl (from https://pypi.org/simple/apscheduler/) (requires-python:>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4))
+Reason for being yanked: Not compatible with Python 2.7
+[0m
+Downloading latch-2.48.3-py3-none-any.whl (258 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 258.2/258.2 kB 6.8 MB/s eta 0:00:00
+
+
+Downloading aioconsole-0.6.1-py3-none-any.whl (30 kB)
+
+Downloading APScheduler-3.9.1-py2.py3-none-any.whl (59 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 59.5/59.5 kB 1.6 MB/s eta 0:00:00
+
+
+Downloading asyncssh-2.13.2-py3-none-any.whl (349 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 349.3/349.3 kB 7.8 MB/s eta 0:00:00
+
+
+Downloading gql-3.4.0-py2.py3-none-any.whl (65 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 65.2/65.2 kB 1.8 MB/s eta 0:00:00
+
+
+Downloading graphql_core-3.2.3-py3-none-any.whl (202 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 202.9/202.9 kB 5.0 MB/s eta 0:00:00
+
+
+Downloading latch_sdk_config-0.0.4-py3-none-any.whl (4.5 kB)
+
+Downloading latch_sdk_gql-0.0.6-py3-none-any.whl (4.0 kB)
+
+Downloading lytekit-0.15.10-py3-none-any.whl (389 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 389.0/389.0 kB 10.0 MB/s eta 0:00:00
+
+
+Downloading lytekitplugins_pods-0.6.2-py3-none-any.whl (4.3 kB)
+
+Downloading requests_toolbelt-0.10.1-py2.py3-none-any.whl (54 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 54.5/54.5 kB 1.5 MB/s eta 0:00:00
+
+
+Using cached typing_extensions-4.7.1-py3-none-any.whl (33 kB)
+
+Downloading watchfiles-0.19.0-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (1.3 MB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 23.5 MB/s eta 0:00:00
+
+
+Downloading websockets-11.0.3-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl (129 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 129.9/129.9 kB 5.1 MB/s eta 0:00:00
+
+
+Downloading lyteidl-0.2.0a0-py3-none-any.whl (162 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 162.2/162.2 kB 4.5 MB/s eta 0:00:00
+
+
+Downloading retry-0.9.2-py2.py3-none-any.whl (8.0 kB)
+
+Downloading boto3-1.34.146-py3-none-any.whl (139 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 139.2/139.2 kB 4.1 MB/s eta 0:00:00
+
+
+Using cached click-8.1.7-py3-none-any.whl (97 kB)
+
+Downloading docker-7.1.0-py3-none-any.whl (147 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 147.8/147.8 kB 4.7 MB/s eta 0:00:00
+
+
+Downloading kubernetes-30.1.0-py2.py3-none-any.whl (1.7 MB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.7/1.7 MB 35.2 MB/s eta 0:00:00
+
+
+Downloading paramiko-3.4.0-py3-none-any.whl (225 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 225.9/225.9 kB 8.8 MB/s eta 0:00:00
+
+
+Downloading PyJWT-2.8.0-py3-none-any.whl (22 kB)
+
+Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+
+Downloading scp-0.15.0-py2.py3-none-any.whl (8.8 kB)
+
+Downloading anyio-4.4.0-py3-none-any.whl (86 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 86.8/86.8 kB 3.5 MB/s eta 0:00:00
+
+
+Downloading backoff-2.2.1-py3-none-any.whl (15 kB)
+
+Downloading bcrypt-4.2.0-cp39-abi3-manylinux_2_28_x86_64.whl (273 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 273.8/273.8 kB 10.2 MB/s eta 0:00:00
+
+
+Downloading botocore-1.34.146-py3-none-any.whl (12.4 MB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.4/12.4 MB 69.9 MB/s eta 0:00:00
+
+
+Downloading cloudpickle-3.0.0-py3-none-any.whl (20 kB)
+
+Downloading cookiecutter-2.6.0-py3-none-any.whl (39 kB)
+
+Downloading croniter-2.0.7-py2.py3-none-any.whl (21 kB)
+
+Downloading cryptography-43.0.0-cp39-abi3-manylinux_2_28_x86_64.whl (4.0 MB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.0/4.0 MB 51.3 MB/s eta 0:00:00
+
+
+Downloading dataclasses_json-0.5.6-py3-none-any.whl (25 kB)
+
+Downloading Deprecated-1.2.14-py2.py3-none-any.whl (9.6 kB)
+
+Downloading diskcache-5.6.3-py3-none-any.whl (45 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 45.5/45.5 kB 950.8 kB/s eta 0:00:00
+
+
+Downloading docker_image_py-0.1.13-py3-none-any.whl (8.9 kB)
+
+Downloading docstring_parser-0.16-py3-none-any.whl (36 kB)
+
+Downloading google_auth-2.32.0-py2.py3-none-any.whl (195 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 195.5/195.5 kB 4.7 MB/s eta 0:00:00
+
+
+Downloading grpcio-1.65.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (5.7 MB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.7/5.7 MB 61.9 MB/s eta 0:00:00
+
+
+Downloading grpcio_status-1.48.2-py3-none-any.whl (14 kB)
+
+Using cached jmespath-1.0.1-py3-none-any.whl (20 kB)
+
+Downloading jsonschema-4.23.0-py3-none-any.whl (88 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 88.5/88.5 kB 2.1 MB/s eta 0:00:00
+
+
+Downloading keyring-25.2.1-py3-none-any.whl (38 kB)
+
+Downloading marshmallow_enum-1.5.1-py2.py3-none-any.whl (4.2 kB)
+
+Downloading marshmallow_jsonschema-0.13.0-py3-none-any.whl (11 kB)
+
+Using cached natsort-8.4.0-py3-none-any.whl (38 kB)
+
+Downloading oauthlib-3.2.2-py3-none-any.whl (151 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 151.7/151.7 kB 3.9 MB/s eta 0:00:00
+
+
+Downloading protobuf-3.20.3-cp310-cp310-manylinux_2_12_x86_64.manylinux2010_x86_64.whl (1.1 MB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.1/1.1 MB 23.6 MB/s eta 0:00:00
+
+
+Downloading PyNaCl-1.5.0-cp36-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_24_x86_64.whl (856 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 856.7/856.7 kB 18.9 MB/s eta 0:00:00
+
+
+Downloading python_json_logger-2.0.7-py3-none-any.whl (8.1 kB)
+
+Downloading pytimeparse-1.1.8-py2.py3-none-any.whl (10.0 kB)
+
+Using cached pytz-2024.1-py2.py3-none-any.whl (505 kB)
+
+Downloading PyYAML-6.0.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (705 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 705.5/705.5 kB 18.1 MB/s eta 0:00:00
+
+
+Downloading responses-0.25.3-py3-none-any.whl (55 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 55.2/55.2 kB 1.2 MB/s eta 0:00:00
+
+
+Using cached s3transfer-0.10.2-py3-none-any.whl (82 kB)
+
+Using cached six-1.16.0-py2.py3-none-any.whl (11 kB)
+
+Downloading sortedcontainers-2.4.0-py2.py3-none-any.whl (29 kB)
+
+Downloading statsd-3.3.0-py2.py3-none-any.whl (11 kB)
+
+Downloading tzlocal-5.2-py3-none-any.whl (17 kB)
+
+Using cached urllib3-1.26.19-py2.py3-none-any.whl (143 kB)
+
+Downloading websocket_client-1.8.0-py3-none-any.whl (58 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 58.8/58.8 kB 1.6 MB/s eta 0:00:00
+
+
+Downloading wrapt-1.16.0-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl (80 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 80.3/80.3 kB 2.4 MB/s eta 0:00:00
+
+
+Downloading yarl-1.9.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (301 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 301.6/301.6 kB 8.6 MB/s eta 0:00:00
+
+
+Downloading requests_oauthlib-2.0.0-py2.py3-none-any.whl (24 kB)
+
+Downloading attrs-23.2.0-py3-none-any.whl (60 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 60.8/60.8 kB 1.7 MB/s eta 0:00:00
+
+
+Downloading binaryornot-0.4.4-py2.py3-none-any.whl (9.0 kB)
+
+Downloading cachetools-5.4.0-py3-none-any.whl (9.5 kB)
+
+Downloading decorator-5.1.1-py3-none-any.whl (9.1 kB)
+
+Downloading exceptiongroup-1.2.2-py3-none-any.whl (16 kB)
+
+Downloading googleapis_common_protos-1.63.2-py2.py3-none-any.whl (220 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 220.0/220.0 kB 6.4 MB/s eta 0:00:00
+
+
+Downloading importlib_metadata-8.0.0-py3-none-any.whl (24 kB)
+
+Downloading jeepney-0.8.0-py3-none-any.whl (48 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 48.4/48.4 kB 1.0 MB/s eta 0:00:00
+
+
+Using cached jinja2-3.1.4-py3-none-any.whl (133 kB)
+
+Downloading jsonschema_specifications-2023.12.1-py3-none-any.whl (18 kB)
+
+Downloading marshmallow-3.21.3-py3-none-any.whl (49 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 49.2/49.2 kB 1.6 MB/s eta 0:00:00
+
+
+Downloading multidict-6.0.5-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (124 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 124.3/124.3 kB 2.9 MB/s eta 0:00:00
+
+
+Downloading py-1.11.0-py2.py3-none-any.whl (98 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 98.7/98.7 kB 3.2 MB/s eta 0:00:00
+
+
+Downloading pyasn1_modules-0.4.0-py3-none-any.whl (181 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 181.2/181.2 kB 4.4 MB/s eta 0:00:00
+
+
+Downloading python_slugify-8.0.4-py2.py3-none-any.whl (10 kB)
+
+Downloading referencing-0.35.1-py3-none-any.whl (26 kB)
+
+Downloading regex-2024.5.15-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (775 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 775.1/775.1 kB 24.5 MB/s eta 0:00:00
+
+
+Downloading rpds_py-0.19.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (355 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 355.8/355.8 kB 9.9 MB/s eta 0:00:00
+
+
+Downloading rsa-4.9-py3-none-any.whl (34 kB)
+
+Downloading SecretStorage-3.3.3-py3-none-any.whl (15 kB)
+
+Downloading sniffio-1.3.1-py3-none-any.whl (10 kB)
+
+Downloading typing_inspect-0.9.0-py3-none-any.whl (8.8 kB)
+
+Downloading arrow-1.3.0-py3-none-any.whl (66 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 66.4/66.4 kB 2.0 MB/s eta 0:00:00
+
+
+Downloading jaraco.classes-3.4.0-py3-none-any.whl (6.8 kB)
+
+Downloading jaraco.context-5.3.0-py3-none-any.whl (6.5 kB)
+
+Downloading jaraco.functools-4.0.1-py3-none-any.whl (9.8 kB)
+
+Downloading protoc_gen_swagger-0.1.0-py2.py3-none-any.whl (9.4 kB)
+
+Downloading rich-13.7.1-py3-none-any.whl (240 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 240.7/240.7 kB 8.9 MB/s eta 0:00:00
+
+
+Downloading chardet-5.2.0-py3-none-any.whl (199 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 199.4/199.4 kB 4.7 MB/s eta 0:00:00
+
+
+Downloading markdown_it_py-3.0.0-py3-none-any.whl (87 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 87.5/87.5 kB 2.5 MB/s eta 0:00:00
+
+
+Downloading MarkupSafe-2.1.5-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (25 kB)
+
+Downloading mypy_extensions-1.0.0-py3-none-any.whl (4.7 kB)
+
+Using cached pyasn1-0.6.0-py2.py3-none-any.whl (85 kB)
+
+Downloading pygments-2.18.0-py3-none-any.whl (1.2 MB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 29.0 MB/s eta 0:00:00
+
+
+Downloading text_unidecode-1.3-py2.py3-none-any.whl (78 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 78.2/78.2 kB 3.5 MB/s eta 0:00:00
+
+
+Downloading types_python_dateutil-2.9.0.20240316-py3-none-any.whl (9.7 kB)
+
+Downloading zipp-3.19.2-py3-none-any.whl (9.0 kB)
+
+Downloading backports.tarfile-1.2.0-py3-none-any.whl (30 kB)
+
+Downloading more_itertools-10.3.0-py3-none-any.whl (59 kB)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 59.2/59.2 kB 1.4 MB/s eta 0:00:00
+
+
+Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+
+Installing collected packages: text-unidecode, statsd, sortedcontainers, pytz, pytimeparse, zipp, wrapt, websockets, websocket-client, urllib3, tzlocal, typing-extensions, types-python-dateutil, sniffio, six, rpds-py, regex, pyyaml, python-slugify, python-json-logger, pyjwt, pygments, pyasn1, py, protobuf, oauthlib, natsort, mypy-extensions, multidict, more-itertools, mdurl, marshmallow, MarkupSafe, latch-sdk-config, jmespath, jeepney, grpcio, graphql-core, exceptiongroup, docstring-parser, diskcache, decorator, cloudpickle, click, chardet, cachetools, bcrypt, backports.tarfile, backoff, attrs, aioconsole, yarl, typing-inspect, rsa, retry, referencing, python-dateutil, pynacl, pyasn1-modules, protoc-gen-swagger, marshmallow-jsonschema, marshmallow-enum, markdown-it-py, Jinja2, jaraco.functools, jaraco.context, jaraco.classes, importlib-metadata, googleapis-common-protos, docker-image-py, deprecated, cryptography, binaryornot, apscheduler, anyio, watchfiles, SecretStorage, rich, responses, requests-toolbelt, requests-oauthlib, paramiko, lyteidl, jsonschema-specifications, grpcio-status, gql, google-auth, docker, dataclasses-json, croniter, botocore, asyncssh, arrow, scp, s3transfer, latch-sdk-gql, kubernetes, keyring, jsonschema, cookiecutter, lytekit, boto3, lytekitplugins-pods, latch
+
+  Attempting uninstall: urllib3
+
+    Found existing installation: urllib3 2.2.1
+
+    Uninstalling urllib3-2.2.1:
+
+      Successfully uninstalled urllib3-2.2.1
+
+Successfully installed Jinja2-3.1.4 MarkupSafe-2.1.5 SecretStorage-3.3.3 aioconsole-0.6.1 anyio-4.4.0 apscheduler-3.9.1 arrow-1.3.0 asyncssh-2.13.2 attrs-23.2.0 backoff-2.2.1 backports.tarfile-1.2.0 bcrypt-4.2.0 binaryornot-0.4.4 boto3-1.34.146 botocore-1.34.146 cachetools-5.4.0 chardet-5.2.0 click-8.1.7 cloudpickle-3.0.0 cookiecutter-2.6.0 croniter-2.0.7 cryptography-43.0.0 dataclasses-json-0.5.6 decorator-5.1.1 deprecated-1.2.14 diskcache-5.6.3 docker-7.1.0 docker-image-py-0.1.13 docstring-parser-0.16 exceptiongroup-1.2.2 google-auth-2.32.0 googleapis-common-protos-1.63.2 gql-3.4.0 graphql-core-3.2.3 grpcio-1.65.1 grpcio-status-1.48.2 importlib-metadata-8.0.0 jaraco.classes-3.4.0 jaraco.context-5.3.0 jaraco.functools-4.0.1 jeepney-0.8.0 jmespath-1.0.1 jsonschema-4.23.0 jsonschema-specifications-2023.12.1 keyring-25.2.1 kubernetes-30.1.0 latch-2.48.3 latch-sdk-config-0.0.4 latch-sdk-gql-0.0.6 lyteidl-0.2.0a0 lytekit-0.15.10 lytekitplugins-pods-0.6.2 markdown-it-py-3.0.0 marshmallow-3.21.3 marshmallow-enum-1.5.1 marshmallow-jsonschema-0.13.0 mdurl-0.1.2 more-itertools-10.3.0 multidict-6.0.5 mypy-extensions-1.0.0 natsort-8.4.0 oauthlib-3.2.2 paramiko-3.4.0 protobuf-3.20.3 protoc-gen-swagger-0.1.0 py-1.11.0 pyasn1-0.6.0 pyasn1-modules-0.4.0 pygments-2.18.0 pyjwt-2.8.0 pynacl-1.5.0 python-dateutil-2.9.0.post0 python-json-logger-2.0.7 python-slugify-8.0.4 pytimeparse-1.1.8 pytz-2024.1 pyyaml-6.0.1 referencing-0.35.1 regex-2024.5.15 requests-oauthlib-2.0.0 requests-toolbelt-0.10.1 responses-0.25.3 retry-0.9.2 rich-13.7.1 rpds-py-0.19.0 rsa-4.9 s3transfer-0.10.2 scp-0.15.0 six-1.16.0 sniffio-1.3.1 sortedcontainers-2.4.0 statsd-3.3.0 text-unidecode-1.3 types-python-dateutil-2.9.0.20240316 typing-extensions-4.7.1 typing-inspect-0.9.0 tzlocal-5.2 urllib3-1.26.19 watchfiles-0.19.0 websocket-client-1.8.0 websockets-11.0.3 wrapt-1.16.0 yarl-1.9.4 zipp-3.19.2
+
+[91mWARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+[0m
+ ---> 413c6245562c
+
+Step 11/15 : run mkdir /opt/latch
+
+
+ ---> Running in d6cf160fedf9
+
+[91mmkdir /opt/latch
+[0m
+ ---> 56a4ac8e837b
+
+Step 12/15 : copy . /root/
+
+
+ ---> e6389ba02f5e
+
+Step 13/15 : arg tag
+
+
+ ---> Running in 8c170aec6e9d
+
+ ---> 744a6c709519
+
+Step 14/15 : env FLYTE_INTERNAL_IMAGE $tag
+
+
+ ---> Running in 80cc489b9013
+
+ ---> 8338b2d0e9c3
+
+Step 15/15 : workdir /root
+
+
+ ---> Running in 8b06688602ec
+
+ ---> 742a9c3a91ec
+
+Successfully built 742a9c3a91ec
+
+Successfully tagged 812206152185.dkr.ecr.us-west-2.amazonaws.com/35597_nf_nf_core_scrnaseq:2.7.0-aeafbb
+
