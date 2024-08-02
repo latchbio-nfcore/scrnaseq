@@ -49,15 +49,15 @@ flow = [
                 "Aligner_options",
                 "",
                 alevin_frk=ForkBranch("Alevin", Params("salmon_index", "txp2gene", "simpleaf_rlen")),
-                cellrangerarc_frk=ForkBranch(
-                    "Cellranger Arc", Params("cellrangerarc_config", "cellrangerarc_reference", "motifs")
-                ),
-                cellranger_frk=ForkBranch("Cellranger", Params("cellranger_index")),
+                # cellrangerarc_frk=ForkBranch(
+                #     "Cellranger Arc", Params("cellrangerarc_config", "cellrangerarc_reference", "motifs")
+                # ),
+                # cellranger_frk=ForkBranch("Cellranger", Params("cellranger_index")),
                 kallisto_frk=ForkBranch(
                     "Kallisto/Bustools", Params("kallisto_index", "kb_t1c", "kb_t2c", "kb_workflow", "kb_filter")
                 ),
                 star_frk=ForkBranch("Star", Params("star_index", "star_ignore_sjdbgtf", "star_feature")),
-                universc_frk=ForkBranch("UniverSC", Params("universc_index")),
+                # universc_frk=ForkBranch("UniverSC", Params("universc_index")),
             ),
         ),
     ),

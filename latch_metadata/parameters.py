@@ -20,7 +20,7 @@ class Aligner(Enum):
     kallisto = "kallisto"
     # cellranger = "cellranger"
     # cellranger_arc = "cellrangerarc"
-    UniverSC = "universc"
+    # UniverSC = "universc"
 
 
 class STAR_options(Enum):
@@ -43,7 +43,7 @@ class kb_workflow(Enum):
 
 
 class Reference_Type(Enum):
-    hg19 = "Homo sapiens (RefSeq GRCh37)"
+    hg38 = "Homo sapiens (RefSeq GRCh38)"
     mm10 = "Mus musculus (RefSeq GRCm38)"
 
 
@@ -137,14 +137,14 @@ generated_parameters = {
         description="The protocol that was used to generate the single cell data, e.g. 10x Genomics v2 Chemistry.\n\n Can be 'auto' (cellranger only), '10XV1', '10XV2', '10XV3', or any other protocol string that will get directly passed the respective aligner.",
     ),
     "skip_multiqc": NextflowParameter(
-        type=typing.Optional[bool],
+        type=bool,
         default=None,
         display_name="skip multiqc",
         section_title="Skip Tools",
         description="Skip MultiQC Report",
     ),
     "skip_fastqc": NextflowParameter(
-        type=typing.Optional[bool],
+        type=bool,
         default=None,
         display_name="skip fastqc",
         section_title=None,
@@ -152,7 +152,7 @@ generated_parameters = {
     ),
     "skip_emptydrops": NextflowParameter(
         type=typing.Optional[bool],
-        default=None,
+        default=True,
         display_name="skip empty drops filter",
         section_title=None,
         description="Skip custom empty drops filter module",
@@ -166,7 +166,7 @@ generated_parameters = {
         type=Reference_Type,
         display_name="Latch Verfied Reference Genome",
         description="Name of Latch Verfied Reference Genome.",
-        default=Reference_Type.hg19,
+        default=Reference_Type.hg38,
     ),
     "fasta": NextflowParameter(
         type=typing.Optional[LatchFile],

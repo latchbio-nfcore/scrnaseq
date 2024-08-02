@@ -15,9 +15,9 @@ class Aligner(Enum):
     star = "star"
     alevin = "alevin"
     kallisto = "kallisto"
-    cellranger = "cellranger"
-    cellranger_arc = "cellrangerarc"
-    UniverSC = "universc"
+    # cellranger = "cellranger"
+    # cellranger_arc = "cellrangerarc"
+    # UniverSC = "universc"
 
 
 @large_task

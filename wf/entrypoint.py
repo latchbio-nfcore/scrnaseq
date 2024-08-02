@@ -55,15 +55,6 @@ def initialize() -> str:
     resp.raise_for_status()
     print("Done.")
 
-    pip_list_cmd = ["/bin/bash", "-c", "source /mambaforge/bin/activate cellxgene && pip list"]
-    print("Listing installed packages in cellxgene environment:")
-    subprocess.run(pip_list_cmd, check=True)
-
-    cmd = ["/bin/bash", "-c", "source /mambaforge/bin/activate cellxgene && cellxgene prepare --help"]
-    print(" ".join(cmd))
-
-    subprocess.run(cmd, check=True)
-
     return resp.json()["name"]
 
 
@@ -79,9 +70,9 @@ class Aligner(Enum):
     star = "star"
     alevin = "alevin"
     kallisto = "kallisto"
-    cellranger = "cellranger"
-    cellranger_arc = "cellrangerarc"
-    UniverSC = "universc"
+    # cellranger = "cellranger"
+    # cellranger_arc = "cellrangerarc"
+    # UniverSC = "universc"
 
 
 class Chemistry(Enum):
@@ -98,7 +89,7 @@ class STAR_options(Enum):
 
 
 class Reference_Type(Enum):
-    hg19 = "Homo sapiens (RefSeq GRCh37)"
+    hg38 = "Homo sapiens (RefSeq GRCh38)"
     mm10 = "Mus musculus (RefSeq GRCm38)"
 
 
@@ -121,9 +112,8 @@ def nextflow_runtime(
     multiqc_title: typing.Optional[str],
     barcode_whitelist: typing.Optional[LatchFile],
     protocol: Chemistry,
-    skip_multiqc: typing.Optional[bool],
-    skip_fastqc: typing.Optional[bool],
-    skip_emptydrops: typing.Optional[bool],
+    skip_multiqc: bool,
+    skip_fastqc: bool,
     genome_source: str,
     fasta: typing.Optional[LatchFile],
     transcript_fasta: typing.Optional[LatchFile],
@@ -149,6 +139,7 @@ def nextflow_runtime(
     star_feature: typing.Optional[STAR_options],
     kb_workflow: typing.Optional[kb_workflow],
     save_reference: bool = False,
+    skip_emptydrops: typing.Optional[bool] = True,
 ) -> str:
     try:
         shared_dir = Path("/nf-workdir")
@@ -202,10 +193,10 @@ def nextflow_runtime(
             print("##########Latch Genome Name##########")
             print(latch_genome.name)
             cmd += [
-                "--fasta ",
-                f"s3://latch-public/test-data/35597/{latch_genome.name}/{latch_genome.name}.fna",
-                "--gtf ",
-                f"s3://latch-public/test-data/35597/{latch_genome.name}/{latch_genome.name}.gtf",
+                "--fasta",
+                f"s3://latch-public/test-data/35597/scrnaseq_ref/{latch_genome.name}/{latch_genome.name}.fa",
+                "--gtf",
+                f"s3://latch-public/test-data/35597/scrnaseq_ref/{latch_genome.name}/{latch_genome.name}.gtf",
             ]
 
         cmd += [
@@ -276,9 +267,8 @@ def nf_nf_core_scrnaseq(
     multiqc_title: typing.Optional[str],
     barcode_whitelist: typing.Optional[LatchFile],
     protocol: Chemistry,
-    skip_multiqc: typing.Optional[bool],
-    skip_fastqc: typing.Optional[bool],
-    skip_emptydrops: typing.Optional[bool],
+    skip_multiqc: bool,
+    skip_fastqc: bool,
     genome_source: str,
     fasta: typing.Optional[LatchFile],
     transcript_fasta: typing.Optional[LatchFile],
@@ -299,11 +289,12 @@ def nf_nf_core_scrnaseq(
     universc_index: typing.Optional[LatchFile],
     multiqc_methods_description: typing.Optional[str],
     aligner: Aligner = Aligner.alevin,
-    latch_genome: Reference_Type = Reference_Type.hg19,
+    latch_genome: Reference_Type = Reference_Type.hg38,
     simpleaf_rlen: typing.Optional[int] = 91,
     star_feature: typing.Optional[STAR_options] = STAR_options.gene,
     kb_workflow: typing.Optional[kb_workflow] = kb_workflow.std,
     save_reference: bool = False,
+    skip_emptydrops: typing.Optional[bool] = True,
 ) -> LatchOutputDir:
     """
     nf-core/scrnaseq
