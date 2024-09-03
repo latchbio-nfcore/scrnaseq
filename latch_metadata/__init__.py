@@ -70,7 +70,8 @@ flow = [
         ),
         Section(
             "Skip Tools",
-            Params("skip_multiqc", "skip_fastqc", "skip_emptydrops"),
+            # Params("skip_multiqc", "skip_fastqc", "skip_emptydrops"),
+            Params("skip_multiqc", "skip_fastqc"),
         ),
     ),
 ]
