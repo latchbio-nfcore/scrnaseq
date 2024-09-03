@@ -1,29 +1,39 @@
+import os
+import shutil
+import subprocess
+import typing
 from dataclasses import dataclass
 from enum import Enum
-import os
-import subprocess
-import requests
-import shutil
 from pathlib import Path
-import typing
+
+import requests
 import typing_extensions
-
-from latch.resources.workflow import workflow
-from latch.resources.tasks import nextflow_runtime_task, custom_task
-from latch.types.file import LatchFile
-from latch.types.directory import LatchDir, LatchOutputDir
-from latch.ldata.path import LPath
-from latch_cli.nextflow.workflow import get_flag
-from latch_cli.nextflow.utils import _get_execution_name
-from latch_cli.utils import urljoins
-from latch.types import metadata
 from flytekit.core.annotation import FlyteAnnotation
-
+from latch.ldata.path import LPath
+from latch.resources.tasks import custom_task, nextflow_runtime_task
+from latch.resources.workflow import workflow
+from latch.types import metadata
+from latch.types.directory import LatchDir, LatchOutputDir
+from latch.types.file import LatchFile
+from latch_cli.nextflow.utils import _get_execution_name
+from latch_cli.nextflow.workflow import get_flag
 from latch_cli.services.register.utils import import_module_by_path
+from latch_cli.utils import urljoins
+
+from wf.cellxgene import cellxgene_prep
+
+
+def get_flag_defaults(name: str, val: typing.Any, default_val: typing.Optional[typing.Any]):
+    if val == default_val or val is None:
+        return ""
+    else:
+        return get_flag(name=name, val=val)
+
 
 meta = Path("latch_metadata") / "__init__.py"
 import_module_by_path(meta)
 import latch_metadata
+
 
 @custom_task(cpu=0.25, memory=0.5, storage_gib=1)
 def initialize() -> str:
@@ -38,8 +48,9 @@ def initialize() -> str:
         "http://nf-dispatcher-service.flyte.svc.cluster.local/provision-storage",
         headers=headers,
         json={
+            "storage_expiration_hours": 1,
             "storage_gib": 100,
-        }
+        },
     )
     resp.raise_for_status()
     print("Done.")
@@ -47,20 +58,98 @@ def initialize() -> str:
     return resp.json()["name"]
 
 
+@dataclass
+class SampleSheet:
+    sample: str
+    fastq_1: LatchFile
+    fastq_2: LatchFile
+    # expected_cells: int
 
 
+class Aligner(Enum):
+    star = "star"
+    alevin = "alevin"
+    kallisto = "kallisto"
+    # cellranger = "cellranger"
+    # cellranger_arc = "cellrangerarc"
+    # UniverSC = "universc"
 
 
-@nextflow_runtime_task(cpu=4, memory=8, storage_gib=100)
-def nextflow_runtime(pvc_name: str, input: LatchFile, outdir: typing_extensions.Annotated[LatchDir, FlyteAnnotation({'output': True})], email: typing.Optional[str], multiqc_title: typing.Optional[str], barcode_whitelist: typing.Optional[LatchFile], skip_multiqc: typing.Optional[bool], skip_fastqc: typing.Optional[bool], skip_emptydrops: typing.Optional[bool], genome: typing.Optional[str], fasta: typing.Optional[LatchFile], transcript_fasta: typing.Optional[LatchFile], gtf: typing.Optional[LatchFile], save_reference: typing.Optional[bool], salmon_index: typing.Optional[LatchFile], txp2gene: typing.Optional[LatchFile], star_index: typing.Optional[LatchFile], star_ignore_sjdbgtf: typing.Optional[str], seq_center: typing.Optional[str], kallisto_index: typing.Optional[LatchFile], kb_t1c: typing.Optional[LatchFile], kb_t2c: typing.Optional[LatchFile], kb_filter: typing.Optional[bool], cellranger_index: typing.Optional[LatchFile], motifs: typing.Optional[str], cellrangerarc_config: typing.Optional[str], cellrangerarc_reference: typing.Optional[str], universc_index: typing.Optional[LatchFile], multiqc_methods_description: typing.Optional[str], aligner: typing.Optional[str], protocol: typing.Optional[str], simpleaf_rlen: typing.Optional[int], star_feature: typing.Optional[str], kb_workflow: typing.Optional[str]) -> None:
+class Chemistry(Enum):
+    _10xv1 = "10XV1"
+    _10xv2 = "10XV2"
+    _10xv3 = "10XV3"
+    auto = "auto"
+
+
+class STAR_options(Enum):
+    gene = "Gene"
+    gene_full = "GeneFull"
+    gene_vel = "Gene Velocyto"
+
+
+class Reference_Type(Enum):
+    hg38 = "Homo sapiens (RefSeq GRCh38)"
+    mm10 = "Mus musculus (RefSeq GRCm38)"
+
+
+class kb_workflow(Enum):
+    std = "standard"
+    nac = "nac"
+    lamanno = "lamanno"
+
+
+input_construct_samplesheet = metadata._nextflow_metadata.parameters["input"].samplesheet_constructor
+
+
+@nextflow_runtime_task(cpu=8, memory=8, storage_gib=500)
+def nextflow_runtime(
+    pvc_name: str,
+    input: typing.List[SampleSheet],
+    outdir: typing_extensions.Annotated[LatchDir, FlyteAnnotation({"output": True})],
+    runname: str,
+    email: typing.Optional[str],
+    multiqc_title: typing.Optional[str],
+    barcode_whitelist: typing.Optional[LatchFile],
+    protocol: Chemistry,
+    skip_multiqc: bool,
+    skip_fastqc: bool,
+    genome_source: str,
+    fasta: typing.Optional[LatchFile],
+    transcript_fasta: typing.Optional[LatchFile],
+    gtf: typing.Optional[LatchFile],
+    salmon_index: typing.Optional[LatchDir],
+    txp2gene: typing.Optional[LatchFile],
+    star_index: typing.Optional[LatchFile],
+    star_ignore_sjdbgtf: typing.Optional[str],
+    seq_center: typing.Optional[str],
+    kallisto_index: typing.Optional[LatchFile],
+    kb_t1c: typing.Optional[LatchFile],
+    kb_t2c: typing.Optional[LatchFile],
+    kb_filter: typing.Optional[bool],
+    cellranger_index: typing.Optional[LatchFile],
+    motifs: typing.Optional[str],
+    cellrangerarc_config: typing.Optional[str],
+    cellrangerarc_reference: typing.Optional[str],
+    universc_index: typing.Optional[LatchFile],
+    multiqc_methods_description: typing.Optional[str],
+    aligner: Aligner,
+    latch_genome: Reference_Type,
+    simpleaf_rlen: typing.Optional[int],
+    star_feature: typing.Optional[STAR_options],
+    kb_workflow: typing.Optional[kb_workflow],
+    save_reference: bool = False,
+    skip_emptydrops: typing.Optional[bool] = True,
+) -> str:
     try:
         shared_dir = Path("/nf-workdir")
 
-
+        input_samplesheet = input_construct_samplesheet(input)
 
         ignore_list = [
             "latch",
             ".latch",
+            ".git",
             "nextflow",
             ".nextflow",
             "work",
@@ -77,7 +166,6 @@ def nextflow_runtime(pvc_name: str, input: LatchFile, outdir: typing_extensions.
             ignore_dangling_symlinks=True,
             dirs_exist_ok=True,
         )
-
         cmd = [
             "/root/nextflow",
             "run",
@@ -88,51 +176,64 @@ def nextflow_runtime(pvc_name: str, input: LatchFile, outdir: typing_extensions.
             "docker",
             "-c",
             "latch.config",
-                *get_flag('input', input),
-                *get_flag('outdir', outdir),
-                *get_flag('email', email),
-                *get_flag('multiqc_title', multiqc_title),
-                *get_flag('barcode_whitelist', barcode_whitelist),
-                *get_flag('aligner', aligner),
-                *get_flag('protocol', protocol),
-                *get_flag('skip_multiqc', skip_multiqc),
-                *get_flag('skip_fastqc', skip_fastqc),
-                *get_flag('skip_emptydrops', skip_emptydrops),
-                *get_flag('genome', genome),
-                *get_flag('fasta', fasta),
-                *get_flag('transcript_fasta', transcript_fasta),
-                *get_flag('gtf', gtf),
-                *get_flag('save_reference', save_reference),
-                *get_flag('salmon_index', salmon_index),
-                *get_flag('txp2gene', txp2gene),
-                *get_flag('simpleaf_rlen', simpleaf_rlen),
-                *get_flag('star_index', star_index),
-                *get_flag('star_ignore_sjdbgtf', star_ignore_sjdbgtf),
-                *get_flag('seq_center', seq_center),
-                *get_flag('star_feature', star_feature),
-                *get_flag('kallisto_index', kallisto_index),
-                *get_flag('kb_t1c', kb_t1c),
-                *get_flag('kb_t2c', kb_t2c),
-                *get_flag('kb_workflow', kb_workflow),
-                *get_flag('kb_filter', kb_filter),
-                *get_flag('cellranger_index', cellranger_index),
-                *get_flag('motifs', motifs),
-                *get_flag('cellrangerarc_config', cellrangerarc_config),
-                *get_flag('cellrangerarc_reference', cellrangerarc_reference),
-                *get_flag('universc_index', universc_index),
-                *get_flag('multiqc_methods_description', multiqc_methods_description)
+            "-resume",
+            *get_flag("input", input_samplesheet),
+            *get_flag_defaults("outdir", LatchOutputDir(outdir.remote_path + "/" + runname), None),
+            *get_flag_defaults("email", email, None),
+            *get_flag_defaults("multiqc_title", multiqc_title, None),
+            *get_flag_defaults("barcode_whitelist", barcode_whitelist, None),
+            *get_flag_defaults("aligner", aligner, Aligner.alevin),
+            *get_flag_defaults("protocol", protocol, None),
+            *get_flag_defaults("skip_multiqc", skip_multiqc, None),
+            *get_flag_defaults("skip_fastqc", skip_fastqc, None),
+            *get_flag_defaults("skip_emptydrops", skip_emptydrops, None),
+        ]
+
+        if genome_source == "latch_genome_source":
+            print("##########Latch Genome Name##########")
+            print(latch_genome.name)
+            cmd += [
+                "--fasta",
+                f"s3://latch-public/test-data/35597/scrnaseq_ref/{latch_genome.name}/{latch_genome.name}.fa",
+                "--gtf",
+                f"s3://latch-public/test-data/35597/scrnaseq_ref/{latch_genome.name}/{latch_genome.name}.gtf",
+            ]
+
+        cmd += [
+            *get_flag_defaults("fasta", fasta, None),
+            *get_flag_defaults("transcript_fasta", transcript_fasta, None),
+            *get_flag_defaults("gtf", gtf, None),
+            *get_flag_defaults("save_reference", save_reference, False),
+            *get_flag_defaults("salmon_index", salmon_index, None),
+            *get_flag_defaults("txp2gene", txp2gene, None),
+            *get_flag_defaults("simpleaf_rlen", simpleaf_rlen, "91"),
+            *get_flag_defaults("star_index", star_index, None),
+            *get_flag_defaults("star_ignore_sjdbgtf", star_ignore_sjdbgtf, None),
+            *get_flag_defaults("seq_center", seq_center, None),
+            *get_flag_defaults("star_feature", star_feature, STAR_options.gene),
+            *get_flag_defaults("kallisto_index", kallisto_index, None),
+            *get_flag_defaults("kb_t1c", kb_t1c, None),
+            *get_flag_defaults("kb_t2c", kb_t2c, None),
+            *get_flag_defaults("kb_workflow", kb_workflow, None),
+            *get_flag_defaults("kb_filter", kb_filter, None),
+            *get_flag_defaults("cellranger_index", cellranger_index, None),
+            *get_flag_defaults("motifs", motifs, None),
+            *get_flag_defaults("cellrangerarc_config", cellrangerarc_config, None),
+            *get_flag_defaults("cellrangerarc_reference", cellrangerarc_reference, None),
+            *get_flag_defaults("universc_index", universc_index, None),
+            *get_flag_defaults("multiqc_methods_description", multiqc_methods_description, None),
         ]
 
         print("Launching Nextflow Runtime")
-        print(' '.join(cmd))
+        print(" ".join(cmd))
         print(flush=True)
 
         env = {
             **os.environ,
             "NXF_HOME": "/root/.nextflow",
-            "NXF_OPTS": "-Xms2048M -Xmx8G -XX:ActiveProcessorCount=4",
-            "K8S_STORAGE_CLAIM_NAME": pvc_name,
+            "NXF_OPTS": "-Xms1536M -Xmx6144M -XX:ActiveProcessorCount=8",
             "NXF_DISABLE_CHECK_LATEST": "true",
+            "NXF_ENABLE_VIRTUAL_THREADS": "false",
         }
         subprocess.run(
             cmd,
@@ -140,6 +241,9 @@ def nextflow_runtime(pvc_name: str, input: LatchFile, outdir: typing_extensions.
             check=True,
             cwd=str(shared_dir),
         )
+
+        return str(runname)
+
     finally:
         print()
 
@@ -154,9 +258,44 @@ def nextflow_runtime(pvc_name: str, input: LatchFile, outdir: typing_extensions.
                 remote.upload_from(nextflow_log)
 
 
-
 @workflow(metadata._nextflow_metadata)
-def nf_nf_core_scrnaseq(input: LatchFile, outdir: typing_extensions.Annotated[LatchDir, FlyteAnnotation({'output': True})], email: typing.Optional[str], multiqc_title: typing.Optional[str], barcode_whitelist: typing.Optional[LatchFile], skip_multiqc: typing.Optional[bool], skip_fastqc: typing.Optional[bool], skip_emptydrops: typing.Optional[bool], genome: typing.Optional[str], fasta: typing.Optional[LatchFile], transcript_fasta: typing.Optional[LatchFile], gtf: typing.Optional[LatchFile], save_reference: typing.Optional[bool], salmon_index: typing.Optional[LatchFile], txp2gene: typing.Optional[LatchFile], star_index: typing.Optional[LatchFile], star_ignore_sjdbgtf: typing.Optional[str], seq_center: typing.Optional[str], kallisto_index: typing.Optional[LatchFile], kb_t1c: typing.Optional[LatchFile], kb_t2c: typing.Optional[LatchFile], kb_filter: typing.Optional[bool], cellranger_index: typing.Optional[LatchFile], motifs: typing.Optional[str], cellrangerarc_config: typing.Optional[str], cellrangerarc_reference: typing.Optional[str], universc_index: typing.Optional[LatchFile], multiqc_methods_description: typing.Optional[str], aligner: typing.Optional[str] = 'alevin', protocol: typing.Optional[str] = 'auto', simpleaf_rlen: typing.Optional[int] = 91, star_feature: typing.Optional[str] = 'Gene', kb_workflow: typing.Optional[str] = 'standard') -> None:
+def nf_nf_core_scrnaseq(
+    input: typing.List[SampleSheet],
+    outdir: typing_extensions.Annotated[LatchDir, FlyteAnnotation({"output": True})],
+    runname: str,
+    email: typing.Optional[str],
+    multiqc_title: typing.Optional[str],
+    barcode_whitelist: typing.Optional[LatchFile],
+    protocol: Chemistry,
+    skip_multiqc: bool,
+    skip_fastqc: bool,
+    genome_source: str,
+    fasta: typing.Optional[LatchFile],
+    transcript_fasta: typing.Optional[LatchFile],
+    gtf: typing.Optional[LatchFile],
+    salmon_index: typing.Optional[LatchDir],
+    txp2gene: typing.Optional[LatchFile],
+    star_index: typing.Optional[LatchFile],
+    star_ignore_sjdbgtf: typing.Optional[str],
+    seq_center: typing.Optional[str],
+    kallisto_index: typing.Optional[LatchFile],
+    kb_t1c: typing.Optional[LatchFile],
+    kb_t2c: typing.Optional[LatchFile],
+    kb_filter: typing.Optional[bool],
+    cellranger_index: typing.Optional[LatchFile],
+    motifs: typing.Optional[str],
+    cellrangerarc_config: typing.Optional[str],
+    cellrangerarc_reference: typing.Optional[str],
+    universc_index: typing.Optional[LatchFile],
+    multiqc_methods_description: typing.Optional[str],
+    aligner: Aligner = Aligner.alevin,
+    latch_genome: Reference_Type = Reference_Type.hg38,
+    simpleaf_rlen: typing.Optional[int] = 91,
+    star_feature: typing.Optional[STAR_options] = STAR_options.gene,
+    kb_workflow: typing.Optional[kb_workflow] = kb_workflow.std,
+    save_reference: bool = False,
+    skip_emptydrops: typing.Optional[bool] = True,
+) -> LatchOutputDir:
     """
     nf-core/scrnaseq
 
@@ -164,5 +303,48 @@ def nf_nf_core_scrnaseq(input: LatchFile, outdir: typing_extensions.Annotated[La
     """
 
     pvc_name: str = initialize()
-    nextflow_runtime(pvc_name=pvc_name, input=input, outdir=outdir, email=email, multiqc_title=multiqc_title, barcode_whitelist=barcode_whitelist, aligner=aligner, protocol=protocol, skip_multiqc=skip_multiqc, skip_fastqc=skip_fastqc, skip_emptydrops=skip_emptydrops, genome=genome, fasta=fasta, transcript_fasta=transcript_fasta, gtf=gtf, save_reference=save_reference, salmon_index=salmon_index, txp2gene=txp2gene, simpleaf_rlen=simpleaf_rlen, star_index=star_index, star_ignore_sjdbgtf=star_ignore_sjdbgtf, seq_center=seq_center, star_feature=star_feature, kallisto_index=kallisto_index, kb_t1c=kb_t1c, kb_t2c=kb_t2c, kb_workflow=kb_workflow, kb_filter=kb_filter, cellranger_index=cellranger_index, motifs=motifs, cellrangerarc_config=cellrangerarc_config, cellrangerarc_reference=cellrangerarc_reference, universc_index=universc_index, multiqc_methods_description=multiqc_methods_description)
+    run_name = nextflow_runtime(
+        pvc_name=pvc_name,
+        input=input,
+        outdir=outdir,
+        runname=runname,
+        email=email,
+        multiqc_title=multiqc_title,
+        barcode_whitelist=barcode_whitelist,
+        aligner=aligner,
+        protocol=protocol,
+        skip_multiqc=skip_multiqc,
+        skip_fastqc=skip_fastqc,
+        skip_emptydrops=skip_emptydrops,
+        genome_source=genome_source,
+        latch_genome=latch_genome,
+        fasta=fasta,
+        transcript_fasta=transcript_fasta,
+        gtf=gtf,
+        save_reference=save_reference,
+        salmon_index=salmon_index,
+        txp2gene=txp2gene,
+        simpleaf_rlen=simpleaf_rlen,
+        star_index=star_index,
+        star_ignore_sjdbgtf=star_ignore_sjdbgtf,
+        seq_center=seq_center,
+        star_feature=star_feature,
+        kallisto_index=kallisto_index,
+        kb_t1c=kb_t1c,
+        kb_t2c=kb_t2c,
+        kb_workflow=kb_workflow,
+        kb_filter=kb_filter,
+        cellranger_index=cellranger_index,
+        motifs=motifs,
+        cellrangerarc_config=cellrangerarc_config,
+        cellrangerarc_reference=cellrangerarc_reference,
+        universc_index=universc_index,
+        multiqc_methods_description=multiqc_methods_description,
+    )
 
+    return cellxgene_prep(
+        run_name=run_name,
+        aligner=aligner,
+        skip_emptydrops=skip_emptydrops,
+        outdir=outdir,
+    )
