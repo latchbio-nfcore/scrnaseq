@@ -52,7 +52,7 @@ class SampleSheet:
     sample: str
     fastq_1: LatchFile
     fastq_2: LatchFile
-    expected_cells: int
+    # expected_cells: int
 
 
 # def custom_samplesheet_constructor(samples: typing.List[SampleSheet]) -> Path:
