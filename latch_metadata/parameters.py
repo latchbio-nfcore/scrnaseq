@@ -1,0 +1,370 @@
+from dataclasses import dataclass
+from enum import Enum
+from pathlib import Path
+from typing import List, Optional
+
+from flytekit.core.annotation import FlyteAnnotation
+from latch.types.directory import LatchDir, LatchOutputDir
+from latch.types.file import LatchFile
+from latch.types.metadata import (
+    Fork,
+    ForkBranch,
+    LatchAuthor,
+    NextflowMetadata,
+    NextflowParameter,
+    Params,
+    Section,
+    Spoiler,
+    Text,
+)
+
+
+class Aligner(Enum):
+    star = "star"
+    alevin = "alevin"
+    kallisto = "kallisto"
+
+
+class STAR_options(Enum):
+    gene = "Gene"
+    gene_full = "GeneFull"
+    gene_vel = "Gene Velocyto"
+
+
+class Chemistry(Enum):
+    _10xv1 = "10XV1"
+    _10xv2 = "10XV2"
+    _10xv3 = "10XV3"
+    auto = "auto"
+
+
+class kb_workflow(Enum):
+    std = "standard"
+    nac = "nac"
+    lamanno = "lamanno"
+
+
+class Reference_Type(Enum):
+    hg38 = "Homo sapiens (RefSeq GRCh38)"
+    mm10 = "Mus musculus (RefSeq GRCm38)"
+
+
+@dataclass
+class SampleSheet:
+    sample: str
+    fastq_1: LatchFile
+    fastq_2: LatchFile
+    expected_cells: Optional[int]
+    seq_center: Optional[str]
+
+
+flow = [
+    Section(
+        "Input",
+        Params("input"),
+    ),
+    Section(
+        "Reference Genome Options",
+        Fork(
+            "genome_source",
+            "",
+            latch_genome_source=ForkBranch(
+                "Latch Certified Reference Genome",
+                Params("latch_genome"),
+            ),
+            input_ref=ForkBranch(
+                "Custom Reference Genome",
+                Params("fasta", "gtf"),
+            ),
+        ),
+    ),
+    Section(
+        "Aligners",
+        Params("aligner"),
+        Params("protocol"),
+        Params("barcode_whitelist"),
+        Spoiler(
+            "Aligner Options",
+            Fork(
+                "Aligner_options",
+                "",
+                alevin_frk=ForkBranch(
+                    "Alevin", Params("salmon_index", "txp2gene", "simpleaf_rlen")
+                ),
+                kallisto_frk=ForkBranch(
+                    "Kallisto/Bustools",
+                    Params(
+                        "kallisto_index", "kb_t1c", "kb_t2c", "kb_workflow", "kb_filter"
+                    ),
+                ),
+                star_frk=ForkBranch(
+                    "Star", Params("star_index", "star_ignore_sjdbgtf", "star_feature")
+                ),
+            ),
+        ),
+    ),
+    Section(
+        "Output Directory",
+        Params("run_name"),
+        Text("Parent directory for outputs"),
+        Params("outdir"),
+    ),
+    Spoiler(
+        "Optional Arguments",
+        Text("Additional optional Arguments"),
+        Section(
+            "Multi QC",
+            Params("multiqc_title", "multiqc_methods_description"),
+        ),
+        Section(
+            "Skip Tools",
+            # Params("skip_multiqc", "skip_fastqc", "skip_emptydrops"),
+            Params("skip_multiqc", "skip_fastqc"),
+        ),
+    ),
+]
+
+
+generated_parameters = {
+    "input": NextflowParameter(
+        type=List[SampleSheet],
+        display_name="Samplesheet",
+        description="Information about the samples in the experiment",
+        section_title=None,
+        samplesheet_type="csv",
+        samplesheet=True,
+    ),
+    "outdir": NextflowParameter(
+        type=LatchOutputDir,
+        default=None,
+        section_title=None,
+        display_name="Output Directory",
+        description="The output directory where the results will be saved.",
+    ),
+    "run_name": NextflowParameter(
+        type=str,
+        default=None,
+        section_title=None,
+        display_name="Run Name",
+        description="Run name",
+    ),
+    "email": NextflowParameter(
+        type=Optional[str],
+        default=None,
+        section_title=None,
+        display_name="email",
+        description="Email address for completion summary.",
+    ),
+    "multiqc_title": NextflowParameter(
+        type=Optional[str],
+        default=None,
+        section_title=None,
+        display_name="Multi QC Header",
+        description="MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
+    ),
+    "barcode_whitelist": NextflowParameter(
+        type=Optional[LatchFile],
+        default=None,
+        section_title=None,
+        display_name="Barcode Whitelist",
+        description="If not using the 10X Genomics platform, a custom barcode whitelist can be used with `--barcode_whitelist`.",
+    ),
+    "aligner": NextflowParameter(
+        type=Aligner,
+        default=Aligner.alevin,
+        section_title=None,
+        display_name="Aligner",
+        description="Name of the tool to use for scRNA (pseudo-) alignment.",
+    ),
+    "protocol": NextflowParameter(
+        type=Chemistry,
+        section_title=None,
+        display_name="Chemistry",
+        description="The protocol that was used to generate the single cell data, e.g. 10x Genomics v2 Chemistry.\n\n Can be 'auto' (cellranger only), '10XV1', '10XV2', '10XV3', or any other protocol string that will get directly passed the respective aligner.",
+    ),
+    "skip_multiqc": NextflowParameter(
+        type=bool,
+        default=None,
+        display_name="skip multiqc",
+        description="Skip MultiQC Report",
+    ),
+    "skip_fastqc": NextflowParameter(
+        type=bool,
+        default=None,
+        display_name="skip fastqc",
+        section_title=None,
+        description="Skip FastQC",
+    ),
+    "skip_emptydrops": NextflowParameter(
+        type=bool,
+        default=True,
+        display_name="skip empty drops filter",
+        section_title=None,
+        description="Skip custom empty drops filter module",
+    ),
+    "genome_source": NextflowParameter(
+        type=str,
+        display_name="Reference Genome",
+        description="Choose Reference Genome",
+    ),
+    "latch_genome": NextflowParameter(
+        type=Reference_Type,
+        display_name="Latch Verfied Reference Genome",
+        description="Name of Latch Verfied Reference Genome.",
+        default=Reference_Type.hg38,
+    ),
+    "fasta": NextflowParameter(
+        type=Optional[LatchFile],
+        default=None,
+        section_title=None,
+        display_name="genome fasta",
+        description="Path to FASTA genome file.",
+    ),
+    "transcript_fasta": NextflowParameter(
+        type=Optional[LatchFile],
+        default=None,
+        section_title=None,
+        display_name="transcript fasta",
+        description="A cDNA FASTA file",
+    ),
+    "gtf": NextflowParameter(
+        type=Optional[LatchFile],
+        default=None,
+        section_title=None,
+        display_name="GTF file",
+        description="Reference GTF annotation file",
+    ),
+    "save_reference": NextflowParameter(
+        type=bool,
+        default=False,
+        section_title=None,
+        display_name="save reference index?",
+        description="Specify this parameter to save the indices created (STAR, Kallisto, Salmon) to the results.",
+    ),
+    "salmon_index": NextflowParameter(
+        type=Optional[LatchDir],
+        default=None,
+        section_title="Alevin Options",
+        display_name="Precomputed salmon index",
+        description="This can be used to specify a precomputed Salmon index in the pipeline, in order to skip the generation of required indices by Salmon itself.",
+    ),
+    "txp2gene": NextflowParameter(
+        type=Optional[LatchFile],
+        default=None,
+        section_title=None,
+        display_name="transcript to gene map",
+        description="Path to transcript to gene mapping file. This allows the specification of a transcript to gene mapping file for Salmon Alevin and AlevinQC.",
+    ),
+    "simpleaf_rlen": NextflowParameter(
+        type=Optional[int],
+        default=91,
+        section_title=None,
+        display_name="target read length",
+        description="It is the target read length the index will be built for, using simpleaf.",
+    ),
+    "star_index": NextflowParameter(
+        type=Optional[LatchFile],
+        default=None,
+        section_title="STARSolo Options",
+        display_name="precomputed star index",
+        description="Specify a path to the precomputed STAR index.",
+    ),
+    "star_ignore_sjdbgtf": NextflowParameter(
+        type=Optional[str],
+        default=None,
+        section_title=None,
+        display_name="Ignore star sjdbgtf",
+        description="Ignore the SJDB GTF file.",
+    ),
+    "seq_center": NextflowParameter(
+        type=Optional[str],
+        default=None,
+        section_title=None,
+        display_name="sequencing center",
+        description="Name of sequencing center for BAM read group tag.",
+    ),
+    "star_feature": NextflowParameter(
+        type=Optional[STAR_options],
+        default=STAR_options.gene,
+        section_title=None,
+        display_name="Star Feature",
+        description="Quantification type of different transcriptomic feature. Use `GeneFull` on pre-mRNA count for single-nucleus RNA-seq reads. Use `Gene Velocyto` to generate RNA velocity matrix.",
+    ),
+    "kallisto_index": NextflowParameter(
+        type=Optional[LatchFile],
+        default=None,
+        section_title="Kallisto/BUS Options",
+        display_name="Precomputed kallisto index",
+        description="Specify a path to the precomputed Kallisto index.",
+    ),
+    "kb_t1c": NextflowParameter(
+        type=Optional[LatchFile],
+        default=None,
+        section_title=None,
+        display_name="kb_t1c",
+        description="Specify a path to the cDNA transcripts-to-capture.",
+    ),
+    "kb_t2c": NextflowParameter(
+        type=Optional[LatchFile],
+        default=None,
+        section_title=None,
+        display_name="kb_t2c",
+        description="Specify a path to the intron transcripts-to-capture.",
+    ),
+    "kb_workflow": NextflowParameter(
+        type=Optional[kb_workflow],
+        default=kb_workflow.std,
+        section_title=None,
+        display_name="kb_workflow",
+        description="Type of workflow. Use `nac` for an index type that can quantify nascent and mature RNA. Use `lamanno` for RNA velocity based on La Manno et al. 2018 logic. (default: standard)",
+    ),
+    "kb_filter": NextflowParameter(
+        type=bool,
+        default=None,
+        section_title=None,
+        display_name="kb_filter",
+        description="Activate Kallisto/BUStools filtering algorithm",
+    ),
+    "cellranger_index": NextflowParameter(
+        type=Optional[LatchFile],
+        default=None,
+        section_title="Cellranger Options",
+        display_name="precomputed cellranger index",
+        description="Specify a pre-calculated cellranger index. Readily prepared indexes can be obtained from the 10x Genomics website. ",
+    ),
+    "motifs": NextflowParameter(
+        type=Optional[str],
+        default=None,
+        section_title="Cellranger ARC Options",
+        display_name="motif file",
+        description="Specify a motif file to create a cellranger-arc index. Can be taken, e.g., from the JASPAR database.",
+    ),
+    "cellrangerarc_config": NextflowParameter(
+        type=Optional[str],
+        default=None,
+        section_title=None,
+        display_name="contig file",
+        description="Specify a config file to create the cellranger-arc index.",
+    ),
+    "cellrangerarc_reference": NextflowParameter(
+        type=Optional[str],
+        default=None,
+        section_title=None,
+        display_name="reference genome",
+        description="Specify the genome reference name used in the config file to create a cellranger-arc index.",
+    ),
+    "universc_index": NextflowParameter(
+        type=Optional[LatchFile],
+        default=None,
+        section_title="UniverSC Options",
+        display_name="precomputed cellranger index",
+        description="Specify a pre-calculated cellranger index. Readily prepared indexes can be obtained from the 10x Genomics website.",
+    ),
+    "multiqc_methods_description": NextflowParameter(
+        type=Optional[str],
+        default=None,
+        section_title=None,
+        display_name="custom MultiQC yaml file",
+        description="Custom MultiQC yaml file containing HTML including a methods description.",
+    ),
+}
