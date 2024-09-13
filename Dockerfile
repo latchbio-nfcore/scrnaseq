@@ -33,6 +33,9 @@ RUN /mambaforge/bin/mamba create -n cellxgene --yes python=3.7 && \
     /mambaforge/bin/mamba run -n cellxgene pip install cellxgene[prepare] && \
     /mambaforge/bin/mamba run -n cellxgene pip install numpy==1.21.6
 
+# Install needed packages
+RUN apt-get update && apt-get install -y pigz
+
 # Latch SDK
 # DO NOT REMOVE
 run pip install latch==2.52.2

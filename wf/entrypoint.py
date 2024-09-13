@@ -1,3 +1,4 @@
+import csv
 import os
 import shutil
 import subprocess
@@ -21,11 +22,11 @@ from latch_cli.nextflow.utils import _get_execution_name
 from latch_cli.nextflow.workflow import get_flag
 from latch_cli.services.register.utils import import_module_by_path
 from latch_cli.utils import urljoins
+
 from wf.cellxgene import cellxgene_prep
 
 meta = Path("latch_metadata") / "__init__.py"
 import_module_by_path(meta)
-import latch_metadata
 
 sys.stdout.reconfigure(line_buffering=True)
 
@@ -49,7 +50,6 @@ class Chemistry(Enum):
     _10xv1 = "10XV1"
     _10xv2 = "10XV2"
     _10xv3 = "10XV3"
-    auto = "auto"
 
 
 class STAR_options(Enum):
@@ -74,6 +74,71 @@ def get_flag_defaults(name: str, val: Any, default_val: Optional[Any]):
         return ""
     else:
         return get_flag(name=name, val=val)
+
+
+def custom_samplesheet_constructor(
+    samples: List[SampleSheet], shared_dir: Path
+) -> Path:
+    """
+    Construct a custom sample sheet CSV file from the provided samples.
+
+    This function creates a CSV file containing information about each sample,
+    including sample name, FASTQ file paths, and strandedness. It also handles
+    compression of FASTQ files if they are not already gzipped.
+
+    Args:
+        samples (List[SampleSheet]): A list of SampleSheet objects containing sample information.
+        shared_dir (Path): The shared directory path for storing compressed files.
+
+    Returns:
+        Path: The path to the created sample sheet CSV file.
+    """
+    samplesheet = Path("/root/samplesheet.csv")
+
+    columns = ["sample", "fastq_1", "fastq_2", "expected_cells"]
+
+    with open(samplesheet, "w") as f:
+        writer = csv.DictWriter(f, columns, delimiter=",")
+        writer.writeheader()
+
+        for sample in samples:
+            # Check and compress fastq_1 if needed
+            fastq_1_path = sample.fastq_1.remote_path
+            if not sample.fastq_1.remote_path.endswith(".gz"):
+                local_path = Path(sample.fastq_1.local_path)
+                compressed_path = shared_dir / f"{local_path.name}.gz"
+                print(f"Compressing to {compressed_path}")
+                subprocess.run(
+                    ["pigz", "-p", "8", "-c", local_path],
+                    stdout=open(compressed_path, "wb"),
+                    check=True,
+                )
+                fastq_1_path = compressed_path
+
+            # Check and compress fastq_2 if it exists and needs compression
+            if sample.fastq_2:
+                fastq_2_path = sample.fastq_2.remote_path
+                if not sample.fastq_2.remote_path.endswith(".gz"):
+                    local_path = Path(sample.fastq_2.local_path)
+                    compressed_path = shared_dir / f"{local_path.name}.gz"
+                    print(f"Compressing to {compressed_path}")
+                    subprocess.run(
+                        ["pigz", "-p", "8", "-c", local_path],
+                        stdout=open(compressed_path, "wb"),
+                        check=True,
+                    )
+                    fastq_2_path = compressed_path
+
+            row_data = {
+                "sample": sample.sample,
+                "fastq_1": fastq_1_path,
+                "fastq_2": fastq_2_path,
+                "expected_cells": sample.expected_cells,
+            }
+            writer.writerow(row_data)
+            print(row_data)
+
+    return samplesheet
 
 
 @custom_task(cpu=0.25, memory=0.5, storage_gib=1)
@@ -101,9 +166,9 @@ def initialize() -> str:
     return resp.json()["name"]
 
 
-input_construct_samplesheet = metadata._nextflow_metadata.parameters[
-    "input"
-].samplesheet_constructor
+# input_construct_samplesheet = metadata._nextflow_metadata.parameters[
+#     "input"
+# ].samplesheet_constructor
 
 
 @nextflow_runtime_task(cpu=8, memory=8, storage_gib=500)
@@ -119,15 +184,16 @@ def nextflow_runtime(
     skip_multiqc: bool,
     skip_fastqc: bool,
     genome_source: str,
+    genome: Optional[str],
     fasta: Optional[LatchFile],
     transcript_fasta: Optional[LatchFile],
     gtf: Optional[LatchFile],
     salmon_index: Optional[LatchDir],
     txp2gene: Optional[LatchFile],
-    star_index: Optional[LatchFile],
-    star_ignore_sjdbgtf: Optional[str],
+    star_index: Optional[LatchDir],
+    star_ignore_sjdbgtf: Optional[LatchFile],
     seq_center: Optional[str],
-    kallisto_index: Optional[LatchFile],
+    kallisto_index: Optional[LatchDir],
     kb_t1c: Optional[LatchFile],
     kb_t2c: Optional[LatchFile],
     kb_filter: bool,
@@ -136,7 +202,7 @@ def nextflow_runtime(
     cellrangerarc_config: Optional[str],
     cellrangerarc_reference: Optional[str],
     universc_index: Optional[LatchFile],
-    multiqc_methods_description: Optional[str],
+    multiqc_methods_description: Optional[LatchFile],
     aligner: Aligner,
     latch_genome: Reference_Type,
     simpleaf_rlen: Optional[int],
@@ -148,8 +214,13 @@ def nextflow_runtime(
     shared_dir = Path("/nf-workdir")
     rename_current_execution(str(run_name))
 
-    input_samplesheet = input_construct_samplesheet(input)
-
+    # input_samplesheet = input_construct_samplesheet(input)
+    # Create custom sample sheet
+    input_samplesheet = custom_samplesheet_constructor(
+        samples=input, shared_dir=shared_dir
+    )
+    print(f"input_samplesheet: {input_samplesheet}")
+    print(f"input_samplesheet flag: {get_flag('input', input_samplesheet)}")
     ignore_list = [
         "latch",
         ".latch",
@@ -196,13 +267,37 @@ def nextflow_runtime(
         *get_flag_defaults("skip_emptydrops", skip_emptydrops, None),
     ]
 
-    if genome_source == "latch_genome_source":
+    if genome_source == "latch_genome_source" and aligner == Aligner.alevin:
         print(latch_genome.name)
         cmd += [
             "--fasta",
-            f"s3://latch-public/test-data/35597/scrnaseq_ref/{latch_genome.name}/{latch_genome.name}.fa",
+            f"s3://latch-public/nf-core/scrnaseq/{latch_genome.name}/{latch_genome.name}.fa",
             "--gtf",
-            f"s3://latch-public/test-data/35597/scrnaseq_ref/{latch_genome.name}/{latch_genome.name}.gtf",
+            f"s3://latch-public/nf-core/scrnaseq/{latch_genome.name}/{latch_genome.name}.gtf",
+            "--salmon_index",
+            f"s3://latch-public/nf-core/scrnaseq/index/{latch_genome.name}/salmon_index",
+            "--txp2gene",
+            f"s3://latch-public/nf-core/scrnaseq/index/{latch_genome.name}/salmon_index/t2g_3col.tsv",
+            "--t2g-map",
+            f"s3://latch-public/nf-core/scrnaseq/index/{latch_genome.name}/salmon_index/t2g_3col.tsv",
+        ]
+    elif genome_source == "latch_genome_source" and aligner == Aligner.star:
+        cmd += [
+            "--fasta",
+            f"s3://latch-public/nf-core/scrnaseq/{latch_genome.name}/{latch_genome.name}.fa",
+            "--gtf",
+            f"s3://latch-public/nf-core/scrnaseq/{latch_genome.name}/{latch_genome.name}.gtf",
+            "--star_index",
+            f"s3://latch-public/nf-core/scrnaseq/index/{latch_genome.name}/star_index",
+        ]
+    elif genome_source == "latch_genome_source" and aligner == Aligner.kallisto:
+        cmd += [
+            "--fasta",
+            f"s3://latch-public/nf-core/scrnaseq/{latch_genome.name}/{latch_genome.name}.fa",
+            "--gtf",
+            f"s3://latch-public/nf-core/scrnaseq/{latch_genome.name}/{latch_genome.name}.gtf",
+            "--kallisto_index",
+            f"s3://latch-public/nf-core/scrnaseq/index/{latch_genome.name}/kallisto_index/kb_ref_out.idx",
         ]
 
     cmd += [
@@ -230,6 +325,7 @@ def nextflow_runtime(
         *get_flag_defaults(
             "multiqc_methods_description", multiqc_methods_description, None
         ),
+        *get_flag_defaults("genome", genome, None),
     ]
 
     print("Launching Nextflow Runtime")
@@ -265,7 +361,7 @@ def nextflow_runtime(
             else:
                 remote = LPath(
                     urljoins(
-                        "latch:///your_log_dir/nf_nf_core_methylseq",
+                        "latch:///your_log_dir/nf_nf_core_scrnaseq",
                         name,
                         "nextflow.log",
                     )
@@ -314,15 +410,16 @@ def nf_nf_core_scrnaseq(
     skip_multiqc: bool,
     skip_fastqc: bool,
     genome_source: str,
+    genome: Optional[str],
     fasta: Optional[LatchFile],
     transcript_fasta: Optional[LatchFile],
     gtf: Optional[LatchFile],
     salmon_index: Optional[LatchDir],
     txp2gene: Optional[LatchFile],
-    star_index: Optional[LatchFile],
-    star_ignore_sjdbgtf: Optional[str],
+    star_index: Optional[LatchDir],
+    star_ignore_sjdbgtf: Optional[LatchFile],
     seq_center: Optional[str],
-    kallisto_index: Optional[LatchFile],
+    kallisto_index: Optional[LatchDir],
     kb_t1c: Optional[LatchFile],
     kb_t2c: Optional[LatchFile],
     kb_filter: bool,
@@ -331,7 +428,7 @@ def nf_nf_core_scrnaseq(
     cellrangerarc_config: Optional[str],
     cellrangerarc_reference: Optional[str],
     universc_index: Optional[LatchFile],
-    multiqc_methods_description: Optional[str],
+    multiqc_methods_description: Optional[LatchFile],
     aligner: Aligner = Aligner.alevin,
     latch_genome: Reference_Type = Reference_Type.hg38,
     simpleaf_rlen: Optional[int] = 91,
@@ -361,6 +458,7 @@ def nf_nf_core_scrnaseq(
         skip_fastqc=skip_fastqc,
         skip_emptydrops=skip_emptydrops,
         genome_source=genome_source,
+        genome=genome,
         latch_genome=latch_genome,
         fasta=fasta,
         transcript_fasta=transcript_fasta,

@@ -35,7 +35,6 @@ class Chemistry(Enum):
     _10xv1 = "10XV1"
     _10xv2 = "10XV2"
     _10xv3 = "10XV3"
-    auto = "auto"
 
 
 class kb_workflow(Enum):
@@ -74,7 +73,11 @@ flow = [
             ),
             input_ref=ForkBranch(
                 "Custom Reference Genome",
-                Params("fasta", "gtf"),
+                Params("fasta", "gtf", "save_reference"),
+                Text(
+                    "The transcriptome and GTF files in iGenomes are vastly out of date with respect to current annotations from Ensembl e.g. human iGenomes annotations are from Ensembl release 75, while the current Ensembl release is 108. Please consider downloading and using a more updated version of your reference genome."
+                ),
+                Params("genome"),
             ),
         ),
     ),
@@ -118,8 +121,7 @@ flow = [
         ),
         Section(
             "Skip Tools",
-            # Params("skip_multiqc", "skip_fastqc", "skip_emptydrops"),
-            Params("skip_multiqc", "skip_fastqc"),
+            Params("skip_fastqc"),
         ),
     ),
 ]
@@ -145,8 +147,8 @@ generated_parameters = {
         type=str,
         default=None,
         section_title=None,
-        display_name="Run Name",
-        description="Run name",
+        display_name="Run name",
+        description="Name of Run",
     ),
     "email": NextflowParameter(
         type=Optional[str],
@@ -180,18 +182,18 @@ generated_parameters = {
         type=Chemistry,
         section_title=None,
         display_name="Chemistry",
-        description="The protocol that was used to generate the single cell data, e.g. 10x Genomics v2 Chemistry.\n\n Can be 'auto' (cellranger only), '10XV1', '10XV2', '10XV3', or any other protocol string that will get directly passed the respective aligner.",
+        description="The protocol that was used to generate the single cell data, e.g. 10x Genomics v2 Chemistry.\n\n Can be '10XV1', '10XV2', '10XV3'.",
     ),
     "skip_multiqc": NextflowParameter(
         type=bool,
         default=None,
-        display_name="skip multiqc",
+        display_name="Skip MultiQC",
         description="Skip MultiQC Report",
     ),
     "skip_fastqc": NextflowParameter(
         type=bool,
         default=None,
-        display_name="skip fastqc",
+        display_name="Skip FastQC",
         section_title=None,
         description="Skip FastQC",
     ),
@@ -238,42 +240,42 @@ generated_parameters = {
         type=bool,
         default=False,
         section_title=None,
-        display_name="save reference index?",
+        display_name="Save Reference",
         description="Specify this parameter to save the indices created (STAR, Kallisto, Salmon) to the results.",
     ),
     "salmon_index": NextflowParameter(
         type=Optional[LatchDir],
         default=None,
         section_title="Alevin Options",
-        display_name="Precomputed salmon index",
+        display_name="Precomputed Salmon Index",
         description="This can be used to specify a precomputed Salmon index in the pipeline, in order to skip the generation of required indices by Salmon itself.",
     ),
     "txp2gene": NextflowParameter(
         type=Optional[LatchFile],
         default=None,
         section_title=None,
-        display_name="transcript to gene map",
+        display_name="Transcript to Gene Mapping File",
         description="Path to transcript to gene mapping file. This allows the specification of a transcript to gene mapping file for Salmon Alevin and AlevinQC.",
     ),
     "simpleaf_rlen": NextflowParameter(
         type=Optional[int],
         default=91,
         section_title=None,
-        display_name="target read length",
+        display_name="Target Read Length",
         description="It is the target read length the index will be built for, using simpleaf.",
     ),
     "star_index": NextflowParameter(
-        type=Optional[LatchFile],
+        type=Optional[LatchDir],
         default=None,
         section_title="STARSolo Options",
-        display_name="precomputed star index",
+        display_name="Precomputed STAR Index",
         description="Specify a path to the precomputed STAR index.",
     ),
     "star_ignore_sjdbgtf": NextflowParameter(
-        type=Optional[str],
+        type=Optional[LatchFile],
         default=None,
         section_title=None,
-        display_name="Ignore star sjdbgtf",
+        display_name="Ignore STAR SJDB GTF file",
         description="Ignore the SJDB GTF file.",
     ),
     "seq_center": NextflowParameter(
@@ -287,42 +289,42 @@ generated_parameters = {
         type=Optional[STAR_options],
         default=STAR_options.gene,
         section_title=None,
-        display_name="Star Feature",
+        display_name="STAR Feature",
         description="Quantification type of different transcriptomic feature. Use `GeneFull` on pre-mRNA count for single-nucleus RNA-seq reads. Use `Gene Velocyto` to generate RNA velocity matrix.",
     ),
     "kallisto_index": NextflowParameter(
-        type=Optional[LatchFile],
+        type=Optional[LatchDir],
         default=None,
         section_title="Kallisto/BUS Options",
-        display_name="Precomputed kallisto index",
+        display_name="Precomputed Kallisto Index",
         description="Specify a path to the precomputed Kallisto index.",
     ),
     "kb_t1c": NextflowParameter(
         type=Optional[LatchFile],
         default=None,
         section_title=None,
-        display_name="kb_t1c",
+        display_name="cDNA transcripts-to-capture File",
         description="Specify a path to the cDNA transcripts-to-capture.",
     ),
     "kb_t2c": NextflowParameter(
         type=Optional[LatchFile],
         default=None,
         section_title=None,
-        display_name="kb_t2c",
+        display_name="Intron transcripts-to-capture File",
         description="Specify a path to the intron transcripts-to-capture.",
     ),
     "kb_workflow": NextflowParameter(
         type=Optional[kb_workflow],
         default=kb_workflow.std,
         section_title=None,
-        display_name="kb_workflow",
+        display_name="Workflow Type",
         description="Type of workflow. Use `nac` for an index type that can quantify nascent and mature RNA. Use `lamanno` for RNA velocity based on La Manno et al. 2018 logic. (default: standard)",
     ),
     "kb_filter": NextflowParameter(
         type=bool,
         default=None,
         section_title=None,
-        display_name="kb_filter",
+        display_name="Activate Kallisto/BUStools Filtering Algorithm",
         description="Activate Kallisto/BUStools filtering algorithm",
     ),
     "cellranger_index": NextflowParameter(
@@ -361,10 +363,17 @@ generated_parameters = {
         description="Specify a pre-calculated cellranger index. Readily prepared indexes can be obtained from the 10x Genomics website.",
     ),
     "multiqc_methods_description": NextflowParameter(
+        type=Optional[LatchFile],
+        default=None,
+        section_title=None,
+        display_name="Custom MultiQC yaml file",
+        description="Custom MultiQC yaml file containing HTML including a methods description.",
+    ),
+    "genome": NextflowParameter(
         type=Optional[str],
         default=None,
         section_title=None,
-        display_name="custom MultiQC yaml file",
-        description="Custom MultiQC yaml file containing HTML including a methods description.",
+        display_name="iGenomes Reference",
+        description="If using a reference genome configured in the pipeline using iGenomes, use this parameter to give the ID for the reference. This is then used to build the full paths for all required reference genome files e.g. --genome GRCh38.",
     ),
 }
