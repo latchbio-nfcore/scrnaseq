@@ -74,10 +74,10 @@ flow = [
             input_ref=ForkBranch(
                 "Custom Reference Genome",
                 Params("fasta", "gtf", "save_reference"),
-                Text(
-                    "The transcriptome and GTF files in iGenomes are vastly out of date with respect to current annotations from Ensembl e.g. human iGenomes annotations are from Ensembl release 75, while the current Ensembl release is 108. Please consider downloading and using a more updated version of your reference genome."
-                ),
-                Params("genome"),
+                # Text(
+                #     "The transcriptome and GTF files in iGenomes are vastly out of date with respect to current annotations from Ensembl e.g. human iGenomes annotations are from Ensembl release 75, while the current Ensembl release is 108. Please consider downloading and using a more updated version of your reference genome."
+                # ),
+                # Params("genome"),
             ),
         ),
     ),
