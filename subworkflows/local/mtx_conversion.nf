@@ -43,6 +43,7 @@ workflow MTX_CONVERSION {
             // making it as [ mtx_1, mtx_2 ]
             ch_concat_h5ad_input = ch_concat_h5ad_input.map{ type, matrices -> [ type, matrices.flatten().toList() ] }
         }
+        println "samplesheet: $samplesheet"
         CONCAT_H5AD (
             ch_concat_h5ad_input,
             samplesheet

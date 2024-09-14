@@ -61,7 +61,9 @@ workflow SCRNASEQ {
 
     // samplesheet - this is passed to the MTX conversion functions to add metadata to the
     // AnnData objects.
+    println "params.input: $params.input"
     ch_input = file(params.input)
+    println "ch_input: $ch_input"
 
     //kallisto params
     ch_kallisto_index = params.kallisto_index ? file(params.kallisto_index) : []
@@ -72,7 +74,8 @@ workflow SCRNASEQ {
 
     //star params
     star_index = params.star_index ? file(params.star_index, checkIfExists: true) : null
-    ch_star_index = star_index ? [[id: star_index.baseName], star_index] : []
+    // ch_star_index = star_index ? [[id: star_index.baseName], star_index] : []
+    ch_star_index = params.star_index ? Channel.fromPath(params.star_index).map{f -> [[id:f.baseName], f] }.collect() : []
     star_feature = params.star_feature
 
     //cellranger params

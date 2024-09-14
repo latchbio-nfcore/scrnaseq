@@ -1,0 +1,105 @@
+Step 1/15 : from 812206152185.dkr.ecr.us-west-2.amazonaws.com/latch-base-nextflow:v2.0.0
+
+
+ ---> 98d9cd0f2a3a
+
+Step 2/15 : workdir /tmp/docker-build/work/
+
+
+ ---> Using cache
+
+ ---> 8f95defb9629
+
+Step 3/15 : shell [     "/usr/bin/env", "bash",     "-o", "errexit",     "-o", "pipefail",     "-o", "nounset",     "-o", "verbose",     "-o", "errtrace",     "-O", "inherit_errexit",     "-O", "shift_verbose",     "-c" ]
+
+
+ ---> Using cache
+
+ ---> b2b2f8c4e3df
+
+Step 4/15 : env TZ='Etc/UTC'
+
+
+ ---> Using cache
+
+ ---> ee07cb31686a
+
+Step 5/15 : env LANG='en_US.UTF-8'
+
+
+ ---> Using cache
+
+ ---> b133cffabb9a
+
+Step 6/15 : arg DEBIAN_FRONTEND=noninteractive
+
+
+ ---> Using cache
+
+ ---> 7f1ec8bb956e
+
+Step 7/15 : RUN apt-get update && apt-get install -y wget build-essential python-dev-is-python3
+
+
+ ---> Using cache
+
+ ---> b448cf388549
+
+Step 8/15 : RUN wget https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh &&     bash Mambaforge-Linux-x86_64.sh -b -p /mambaforge &&     rm Mambaforge-Linux-x86_64.sh
+
+
+ ---> Using cache
+
+ ---> 5786d461abb6
+
+Step 9/15 : RUN /mambaforge/bin/mamba create -n cellxgene --yes python=3.7 &&     /mambaforge/bin/mamba install -n cellxgene -c conda-forge --yes pip numba==0.52.0 &&     /mambaforge/bin/mamba run -n cellxgene pip install cellxgene[prepare] &&     /mambaforge/bin/mamba run -n cellxgene pip install numpy==1.21.6
+
+
+ ---> Using cache
+
+ ---> 949f2dcdd3b8
+
+Step 10/15 : run pip install latch==2.52.2
+
+
+ ---> Using cache
+
+ ---> 5a6397546ee4
+
+Step 11/15 : run mkdir /opt/latch
+
+
+ ---> Using cache
+
+ ---> b07576b6d04d
+
+Step 12/15 : copy . /root/
+
+
+ ---> a2eeb16e77cc
+
+Step 13/15 : arg tag
+
+
+ ---> Running in 17fb0d5d5c2b
+
+ ---> db3b9f740d41
+
+Step 14/15 : env FLYTE_INTERNAL_IMAGE $tag
+
+
+ ---> Running in ea019b444dce
+
+ ---> 7647812d4510
+
+Step 15/15 : workdir /root
+
+
+ ---> Running in 0c70820106f4
+
+ ---> 4d38917e9e8b
+
+Successfully built 4d38917e9e8b
+
+Successfully tagged 812206152185.dkr.ecr.us-west-2.amazonaws.com/36340_nf_nf_core_scrnaseq:0.1.0-417137-wip-fc9224
+

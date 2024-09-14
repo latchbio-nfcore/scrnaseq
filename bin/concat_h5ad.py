@@ -5,9 +5,12 @@ import os
 
 os.environ["NUMBA_CACHE_DIR"] = "."
 
-import scanpy as sc, anndata as ad, pandas as pd
-from pathlib import Path
 import argparse
+from pathlib import Path
+
+import anndata as ad
+import pandas as pd
+import scanpy as sc
 
 
 def read_samplesheet(samplesheet):
@@ -23,7 +26,9 @@ def read_samplesheet(samplesheet):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Concatenates h5ad files and merge metadata from samplesheet")
+    parser = argparse.ArgumentParser(
+        description="Concatenates h5ad files and merge metadata from samplesheet"
+    )
 
     parser.add_argument("-i", "--input", dest="input", help="Path to samplesheet.csv")
     parser.add_argument("-o", "--out", dest="out", help="Output path.")
@@ -36,11 +41,16 @@ if __name__ == "__main__":
 
     args = vars(parser.parse_args())
 
+    input_samplesheet = Path(f"/nf-workdir/{args['input']}")
+
     # Open samplesheet as dataframe
-    df_samplesheet = read_samplesheet(args["input"])
+    df_samplesheet = read_samplesheet(input_samplesheet)
 
     # find all h5ad and append to dict
-    dict_of_h5ad = {str(path).replace(args["suffix"], ""): sc.read_h5ad(path) for path in Path(".").rglob("*.h5ad")}
+    dict_of_h5ad = {
+        str(path).replace(args["suffix"], ""): sc.read_h5ad(path)
+        for path in Path(".").rglob("*.h5ad")
+    }
 
     # concat h5ad files
     adata = ad.concat(dict_of_h5ad, label="sample", merge="unique", index_unique="_")
