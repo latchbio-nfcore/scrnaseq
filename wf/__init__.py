@@ -23,7 +23,6 @@ from wf.entrypoint import (
 def nf_nf_core_scrnaseq(
     run_name: str,
     input: List[SampleSheet],
-    outdir: LatchOutputDir,
     email: Optional[str],
     multiqc_title: Optional[str],
     barcode_whitelist: Optional[LatchFile],
@@ -57,6 +56,7 @@ def nf_nf_core_scrnaseq(
     kb_workflow: Optional[kb_workflow] = kb_workflow.std,
     save_reference: bool = False,
     skip_emptydrops: bool = True,
+    outdir: LatchOutputDir = LatchOutputDir("latch:///SingleCellRNAseq"),
 ) -> LatchOutputDir:
     """
     nf-core/scrnaseq is a bioinformatics best-practice analysis pipeline for processing 10x Genomics single-cell RNA-seq data.
