@@ -9,21 +9,15 @@ from pathlib import Path
 from typing import Any, List, Optional
 
 import requests
-import typing_extensions
-from flytekit.core.annotation import FlyteAnnotation
 from latch.executions import rename_current_execution, report_nextflow_used_storage
 from latch.ldata.path import LPath
 from latch.resources.tasks import custom_task, nextflow_runtime_task
-from latch.resources.workflow import workflow
-from latch.types import metadata
 from latch.types.directory import LatchDir, LatchOutputDir
 from latch.types.file import LatchFile
 from latch_cli.nextflow.utils import _get_execution_name
 from latch_cli.nextflow.workflow import get_flag
 from latch_cli.services.register.utils import import_module_by_path
 from latch_cli.utils import urljoins
-
-from wf.cellxgene import cellxgene_prep
 
 meta = Path("latch_metadata") / "__init__.py"
 import_module_by_path(meta)
@@ -142,7 +136,9 @@ def custom_samplesheet_constructor(
 
 
 @custom_task(cpu=0.25, memory=0.5, storage_gib=1)
-def initialize() -> str:
+def initialize(run_name: str) -> str:
+    rename_current_execution(str(run_name))
+
     token = os.environ.get("FLYTE_INTERNAL_EXECUTION_ID")
     if token is None:
         raise RuntimeError("failed to get execution token")
@@ -164,11 +160,6 @@ def initialize() -> str:
     print("Done.")
 
     return resp.json()["name"]
-
-
-# input_construct_samplesheet = metadata._nextflow_metadata.parameters[
-#     "input"
-# ].samplesheet_constructor
 
 
 @nextflow_runtime_task(cpu=8, memory=8, storage_gib=500)
@@ -212,9 +203,7 @@ def nextflow_runtime(
     skip_emptydrops: bool = True,
 ) -> str:
     shared_dir = Path("/nf-workdir")
-    rename_current_execution(str(run_name))
 
-    # input_samplesheet = input_construct_samplesheet(input)
     # Create custom sample sheet
     input_samplesheet = custom_samplesheet_constructor(
         samples=input, shared_dir=shared_dir
@@ -396,97 +385,3 @@ def nextflow_runtime(
             sys.exit(1)
 
         return str(run_name)
-
-
-@workflow(metadata._nextflow_metadata)
-def nf_nf_core_scrnaseq(
-    run_name: str,
-    input: List[SampleSheet],
-    outdir: LatchOutputDir,
-    email: Optional[str],
-    multiqc_title: Optional[str],
-    barcode_whitelist: Optional[LatchFile],
-    protocol: Chemistry,
-    skip_multiqc: bool,
-    skip_fastqc: bool,
-    genome_source: str,
-    genome: Optional[str],
-    fasta: Optional[LatchFile],
-    transcript_fasta: Optional[LatchFile],
-    gtf: Optional[LatchFile],
-    salmon_index: Optional[LatchDir],
-    txp2gene: Optional[LatchFile],
-    star_index: Optional[LatchDir],
-    star_ignore_sjdbgtf: Optional[LatchFile],
-    seq_center: Optional[str],
-    kallisto_index: Optional[LatchDir],
-    kb_t1c: Optional[LatchFile],
-    kb_t2c: Optional[LatchFile],
-    kb_filter: bool,
-    cellranger_index: Optional[LatchFile],
-    motifs: Optional[str],
-    cellrangerarc_config: Optional[str],
-    cellrangerarc_reference: Optional[str],
-    universc_index: Optional[LatchFile],
-    multiqc_methods_description: Optional[LatchFile],
-    aligner: Aligner = Aligner.alevin,
-    latch_genome: Reference_Type = Reference_Type.hg38,
-    simpleaf_rlen: Optional[int] = 91,
-    star_feature: Optional[STAR_options] = STAR_options.gene,
-    kb_workflow: Optional[kb_workflow] = kb_workflow.std,
-    save_reference: bool = False,
-    skip_emptydrops: bool = True,
-) -> LatchOutputDir:
-    """
-    nf-core/scrnaseq
-
-    Sample Description
-    """
-
-    pvc_name: str = initialize()
-    run_name = nextflow_runtime(
-        pvc_name=pvc_name,
-        input=input,
-        outdir=outdir,
-        run_name=run_name,
-        email=email,
-        multiqc_title=multiqc_title,
-        barcode_whitelist=barcode_whitelist,
-        aligner=aligner,
-        protocol=protocol,
-        skip_multiqc=skip_multiqc,
-        skip_fastqc=skip_fastqc,
-        skip_emptydrops=skip_emptydrops,
-        genome_source=genome_source,
-        genome=genome,
-        latch_genome=latch_genome,
-        fasta=fasta,
-        transcript_fasta=transcript_fasta,
-        gtf=gtf,
-        save_reference=save_reference,
-        salmon_index=salmon_index,
-        txp2gene=txp2gene,
-        simpleaf_rlen=simpleaf_rlen,
-        star_index=star_index,
-        star_ignore_sjdbgtf=star_ignore_sjdbgtf,
-        seq_center=seq_center,
-        star_feature=star_feature,
-        kallisto_index=kallisto_index,
-        kb_t1c=kb_t1c,
-        kb_t2c=kb_t2c,
-        kb_workflow=kb_workflow,
-        kb_filter=kb_filter,
-        cellranger_index=cellranger_index,
-        motifs=motifs,
-        cellrangerarc_config=cellrangerarc_config,
-        cellrangerarc_reference=cellrangerarc_reference,
-        universc_index=universc_index,
-        multiqc_methods_description=multiqc_methods_description,
-    )
-
-    return cellxgene_prep(
-        run_name=run_name,
-        aligner=aligner,
-        skip_emptydrops=skip_emptydrops,
-        outdir=outdir,
-    )
